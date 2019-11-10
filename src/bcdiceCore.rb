@@ -180,12 +180,6 @@ class BCDice
     output, secret = checkRnDice(arg)
     return output, secret unless output.nil?
 
-    output, secret = checkUpperRoll(arg)
-    return output, secret unless output.nil?
-
-    # output, secret = Choice.roll(arg, @randomizer)
-    # return output, secret unless output.nil?
-
     output = '1'
     secret = false
     return output, secret

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 require "dice/choice"
+require "dice/UpperDice"
 require "utils/normalize"
 
 class DiceBot
@@ -20,6 +21,7 @@ class DiceBot
   end
 
   include Choice
+  include UpperDice
   include Normalize
 
   # 接頭辞（反応するコマンド）を設定する
@@ -104,6 +106,8 @@ class DiceBot
     end
 
     if (text = eval_choice(command))
+      return text
+    elsif (text = eval_upper_dice(command))
       return text
     end
 

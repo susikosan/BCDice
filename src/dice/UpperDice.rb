@@ -3,103 +3,84 @@
 require 'utils/ArithmeticEvaluator'
 require 'utils/normalize'
 
-class UpperDice
+module UpperDice
   include Normalize
 
-  def initialize(diceBot, randomizer)
-    @diceBot = diceBot
-    @randomizer = randomizer
+  def eval_upper_dice(command)
+    command = command.upcase
+    m = /(S)?\d+U\d+/i.match(command)
+    unless m
+      return nil
+    end
+
+    text = roll_add_dice(command)
+    unless text
+      return nil
+    end
+
+    @secret = !m[1].nil?
+    return text
   end
 
   # 上方無限型ダイスロール
-  def rollDice(string)
-    debug('udice begin string', string)
-
-    output = '1'
-
+  def roll_add_dice(string)
     string = string.gsub(/-[sS]?[\d]+[uU][\d]+/, '') # 上方無限の引き算しようとしてる部分をカット
 
-    unless (m = /(^|\s)[sS]?(\d+[uU][\d\+\-uU]+)(\[(\d+)\])?([\+\-\d]*)(([<>=]+)(\d+))?(\@(\d+))?($|\s)/.match(string))
-      return output
+    m = /^S?(\d+U[\d\+\-U]+)(\[(\d+)\])?([-+\d]+)?(([<>=]+)(\d+))?(@(\d+))?/i.match(string)
+    unless m
+      return nil
     end
 
-    command = m[2]
-    signOfInequalityText = m[7]
-    diff = m[8].to_i
-    upperTarget1 = m[4]
-    upperTarget2 = m[10]
+    expr = m[1]
+    modifier_text = m[4]
+    modifier = modifier_text.nil? ? 0 : ArithmeticEvaluator.new.eval(modifier_text)
+    operator = normalize_operator(m[6])
+    target = m[7]&.to_i
+    reroll_threshold = getAddRollUpperTarget(m[3] || m[9])
 
-    modifier = m[5] || ''
-    debug('modifier', modifier)
-
-    debug('p $...', [m[1], m[2], m[3], m[4], m[5], m[6], m[7], m[8], m[9], m[10]])
-
-    string = command
-
-    @signOfInequality = normalize_operator(signOfInequalityText)
-    @upper = getAddRollUpperTarget(upperTarget1, upperTarget2)
-
-    if @upper <= 1
-      output = ": (#{string}\[#{@upper}\]#{modifier}) ＞ 無限ロールの条件がまちがっています"
-      return output
+    if reroll_threshold <= 1
+      return ": (#{expr}[#{reroll_threshold}]#{modifier}) ＞ 無限ロールの条件がまちがっています"
     end
 
-    diceCommands = string.split('+')
-
-    bonusValue = getBonusValue(modifier)
-    debug('bonusValue', bonusValue)
-
-    diceDiff = diff - bonusValue
-
-    totalDiceString, totalSuccessCount, totalDiceCount, maxDiceValue, totalValue = getUpperDiceCommandResult(diceCommands, diceDiff)
-
-    output = "#{totalDiceString}#{formatBonus(bonusValue)}"
-
-    maxValue = maxDiceValue + bonusValue
-    totalValue += bonusValue
-
-    string += "[#{@upper}]" + modifier
-
-    if @diceBot.isPrintMaxDice && (totalDiceCount > 1)
-      output = "#{output} ＞ #{totalValue}"
-    end
-
-    if @signOfInequality
-      output = "#{output} ＞ 成功数#{totalSuccessCount}"
-      string += "#{operator_to_s(@signOfInequality)}#{diff}"
-    else
-      output += getMaxAndTotalValueResultStirng(maxValue, totalValue, totalDiceCount)
-    end
-
-    output = ": (#{string}) ＞ #{output}"
-
-    if output.length > $SEND_STR_MAX
-      output = ": (#{string}) ＞ ... ＞ #{totalValue}"
-      if @signOfInequality
-        output += getMaxAndTotalValueResultStirng(maxValue, totalValue, totalDiceCount)
+    dice_list = []
+    expr.split("+").each do |dice|
+      times, sides = dice.split("U", 2).map { |s| s.to_i }
+      arr = roll_u(times, sides, reroll_threshold)
+      if sortType & 2 != 0
+        arr = arr.sort()
       end
+      dice_list.concat(arr)
     end
 
-    return output
-  end
+    modifier_with_sign = formatBonus(modifier)
+    command = "#{expr}[#{reroll_threshold}]#{modifier_text}"
+    output = dice_list.map do |x|
+      if x[1].length == 1
+        x[0].to_s
+      else
+        "#{x[0]}[#{x[1].join(',')}]"
+      end
+    end.join(",") + modifier_with_sign
 
-  def getMaxAndTotalValueResultStirng(maxValue, totalValue, _totalDiceCount)
-    return " ＞ #{maxValue}/#{totalValue}(最大/合計)"
-  end
-
-  def getAddRollUpperTarget(target1, target2)
-    if  target1
-      return target1.to_i
-    end
-
-    if  target2
-      return target2.to_i
-    end
-
-    if @diceBot.upplerRollThreshold == "Max"
-      return 2
+    values = dice_list.map { |x| x[0] }
+    if operator
+      modified_target = target - modifier
+      success_count = dice_list.count { |x| x[0].send(operator, modified_target) }
+      return ": (#{command}#{operator}#{target}) ＞ #{output} ＞ 成功数#{success_count}"
     else
-      return @diceBot.upplerRollThreshold
+      total = values.sum() + modifier
+      max_value = values.max() + modifier
+      return ": (#{command}) ＞ #{output} ＞ #{max_value}/#{total}(最大/合計)"
+    end
+  end
+
+  def getAddRollUpperTarget(threshold)
+    if upplerRollThreshold == "Max"
+      2
+    elsif threshold
+      threshold.to_i
+    else
+      upplerRollThreshold
     end
   end
 
@@ -110,52 +91,8 @@ class UpperDice
     if modifier.empty?
       0
     else
-      ArithmeticEvaluator.new.eval(modifier, @diceBot.fractionType.to_sym)
+      ArithmeticEvaluator.new.eval(modifier, fractionType.to_sym)
     end
-  end
-
-  def getUpperDiceCommandResult(diceCommands, diceDiff)
-    success_count = 0
-    diceStringList = []
-    max_dice_value = 0
-
-    diceCommands.each do |diceCommand|
-      diceCount, diceMax = diceCommand.split(/[uU]/).collect { |s| s.to_i }
-      diceCount = diceCount.to_i
-      diceMax = diceMax.to_i
-
-      if @diceBot.upplerRollThreshold == "Max"
-        @upper = diceMax
-      end
-
-      ret = []
-      diceCount.times do
-        arr = roll_u_single(diceMax, @upper)
-        val = arr.sum()
-        if @signOfInequality && val.send(@signOfInequality, diceDiff)
-          success_count += 1
-        end
-        if val > max_dice_value
-          max_dice_value = val
-        end
-
-        text = arr.length == 1 ? val.to_s : "#{val}[#{arr.join(',')}]"
-        ret.push([val, text])
-      end
-
-      if @diceBot.sortType & 2 != 0
-        ret = ret.sort()
-      end
-      text = ret.map { |x| x[1] }.join(",")
-      diceStringList.push(text)
-    end
-
-    totalDiceString = diceStringList.join(",")
-
-    total_dice_count = @randomizer.rand_values.length
-    total_value = @randomizer.rand_values.sum()
-
-    return totalDiceString, success_count, total_dice_count, max_dice_value, total_value
   end
 
   # 出力用にボーナス値を整形する
@@ -171,8 +108,16 @@ class UpperDice
     end
   end
 
+  # @result [Array<(Integer, Array<Integer>)>]
+  def roll_u(times, sides, threshold)
+    Array.new(times) do
+      list = roll_u_once(sides, threshold)
+      [list.sum(), list]
+    end
+  end
+
   # @result [Array<Integer>]
-  def roll_u_single(sides, threshold)
+  def roll_u_once(sides, threshold)
     ret = []
     loop do
       val = @randomizer.rand(sides)

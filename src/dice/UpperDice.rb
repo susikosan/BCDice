@@ -6,6 +6,11 @@ require 'utils/normalize'
 module UpperDice
   include Normalize
 
+  # 上方無限ロールを評価する
+  #
+  # @param [String] command
+  # @return [String]
+  # @return [nil] 上方無限ロールでない時にnilを返す
   def eval_upper_dice(command)
     command = command.upcase
     m = /(S)?\d+U\d+/i.match(command)
@@ -22,7 +27,11 @@ module UpperDice
     return text
   end
 
-  # 上方無限型ダイスロール
+  # 上方無限ロールを評価する
+  #
+  # @param [String] string
+  # @return [String]
+  # @return [nil] 上方無限ロールでない時にnilを返す
   def roll_add_dice(string)
     string = string.gsub(/-[sS]?[\d]+[uU][\d]+/, '') # 上方無限の引き算しようとしてる部分をカット
 
@@ -108,6 +117,11 @@ module UpperDice
     end
   end
 
+  # 上方無限ロールを振る
+  #
+  # @param [Integer] times 回数
+  # @param [Integer] sides ダイスの面数
+  # @param [Integer] threshold 振り足しの閾値
   # @result [Array<(Integer, Array<Integer>)>]
   def roll_u(times, sides, threshold)
     Array.new(times) do
@@ -116,6 +130,10 @@ module UpperDice
     end
   end
 
+  # 1回上方無限ロールを行う。出目 >= thresholdの時に振り足す
+  #
+  # @param [Integer] sides
+  # @param [Integer] threshold
   # @result [Array<Integer>]
   def roll_u_once(sides, threshold)
     ret = []

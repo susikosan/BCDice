@@ -19,7 +19,7 @@ class Table
   end
 
   # 表を振る
-  # @param [BCDice] bcdice
+  # @param [BCDiceCore] bcdice
   # @return [String | nil] 結果
   def roll(bcdice)
     case @type
@@ -31,7 +31,7 @@ class Table
   private
 
   # 加算ダイスで表を振る
-  # @param [BCDice] bcdice
+  # @param [BCDiceCore] bcdice
   # @return [String] 結果
   def roll_d(bcdice)
     value, = bcdice.roll(@times, @sides)

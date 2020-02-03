@@ -95,7 +95,7 @@ class CgiDiceBot
   end
 
   def executeDiceBot(message, gameType)
-    bcdice = BCDice.new(:game_type => gameType, :rands => @rands, :test_mode => true)
+    bcdice = BCDiceCore.new(:game_type => gameType, :rands => @rands, :test_mode => true)
     gameType = bcdice.getGameType
 
     result_text = bcdice.eval(message)

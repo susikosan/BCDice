@@ -23,7 +23,7 @@ class TestDiceBotLoaders < Test::Unit::TestCase
   def setup
     $isDebug = false
 
-    @bcDice = BCDice.new()
+    @bcDice = BCDiceCore.new()
   end
 
   #--

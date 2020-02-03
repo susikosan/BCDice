@@ -40,8 +40,8 @@ require 'dice/RerollDice'
 require 'dice/choice'
 require 'utils/randomizer'
 
-class BCDice
-  VERSION = "2.03.04".freeze
+class BCDiceCore
+  VERSION = "3.0.0-alpha".freeze
 
   include Normalize
 

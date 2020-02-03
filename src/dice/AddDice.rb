@@ -62,8 +62,6 @@ class AddDice
         dice_cnt += cnt_wk
         dice_max = max_wk if max_wk > dice_max
 
-        next if @diceBot.sendMode == 0
-
         operatorText = getOperatorText(rate, output)
         output += "#{operatorText}#{dice_str}"
       end
@@ -80,12 +78,8 @@ class AddDice
     addText, revision = @diceBot.getDiceRevision(n_max, dice_max, total_n)
     debug('addText, revision', addText, revision)
 
-    if @diceBot.sendMode > 0
-      if output =~ /[^\d\[\]]+/
-        output = ": (#{string}) ＞ #{output} ＞ #{total_n}#{addText}"
-      else
-        output = ": (#{string}) ＞ #{total_n}#{addText}"
-      end
+    if output =~ /[^\d\[\]]+/
+      output = ": (#{string}) ＞ #{output} ＞ #{total_n}#{addText}"
     else
       output = ": (#{string}) ＞ #{total_n}#{addText}"
     end
@@ -248,11 +242,7 @@ class AddDice
     dice_now = @diceBot.changeDiceValueByDiceText(dice_now, dice_str, isCheckSuccess, dice_max)
 
     output = ""
-    if @diceBot.sendMode > 1
-      output += "#{dice_now}[#{dice_str}]"
-    elsif @diceBot.sendMode > 0
-      output += dice_now.to_s
-    end
+    output += "#{dice_now}[#{dice_str}]"
 
     return dice_max, dice_now, output, n1_count, max_number, result_dice_count
   end

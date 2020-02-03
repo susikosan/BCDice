@@ -323,11 +323,8 @@ class BCDiceCore
 
         dice_now += dice_n
 
-        debug('@diceBot.sendMode', @diceBot.sendMode)
-        if @diceBot.sendMode >= 2
-          dice_st_n += "," unless dice_st_n.empty?
-          dice_st_n += dice_n.to_s
-        end
+        dice_st_n += "," unless dice_st_n.empty?
+        dice_st_n += dice_n.to_s
         round += 1
 
         break unless (dice_add > 1) && (dice_n >= dice_add)
@@ -344,7 +341,7 @@ class BCDiceCore
         rerollCount += 1 if dice_now >= dice_re
       end
 
-      if (@diceBot.sendMode >= 2) && (round >= 2)
+      if round >= 2
         dice_result.push("#{dice_now}[#{dice_st_n}]")
       else
         dice_result.push(dice_now)

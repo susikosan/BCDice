@@ -3,7 +3,7 @@
 class KanColle < DiceBot
   def initialize
     super
-    @sendMode = 2
+
     @sortType = 3
     @d66Type = 2
   end
@@ -41,7 +41,7 @@ class KanColle < DiceBot
 　・特殊開発表　WPMC　(燃料6/弾薬3/鋼材6/ボーキ3)
 　・新・特殊開発表　WPMCN
 　・艦載機関開発表　WPFA　(燃料3/弾薬6/鋼材3/ボーキ6)
-　・砲類開発表　WPCN　(燃料3/弾薬6/鋼材6/ボーキ3)　
+　・砲類開発表　WPCN　(燃料3/弾薬6/鋼材6/ボーキ3)
 　・敵深海棲艦の装備決定 BT2～BT12
 ・D66ダイス(D66S相当=低い方が10の桁になる)
 INFO_MESSAGE_TEXT

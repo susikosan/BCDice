@@ -3,7 +3,7 @@
 class HatsuneMiku < DiceBot
   def initialize
     super
-    @sendMode = 2
+
     @d66Type = 2
   end
 

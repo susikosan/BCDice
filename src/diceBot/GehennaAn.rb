@@ -5,7 +5,6 @@ class GehennaAn < DiceBot
 
   def initialize
     super
-    @sendMode = 3
     @sortType = 3
   end
 

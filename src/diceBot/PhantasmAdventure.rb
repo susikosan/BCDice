@@ -3,7 +3,6 @@
 class PhantasmAdventure < DiceBot
   def initialize
     super
-    @sendMode = 2
   end
 
   def gameName
@@ -42,10 +41,6 @@ INFO_MESSAGE_TEXT
       fum_num = 20 if fum_num > 20
       fum_num = 1 if fum_num < 1
 
-      if sendMode <= 1
-        return " ＞ 致命的失敗(#{fum_num})"
-      end
-
       fum_str = dice_now.to_s
       if skill_mod < 0
         fum_str += "+#{skill_mod * -1}=#{fum_num}"
@@ -63,11 +58,7 @@ INFO_MESSAGE_TEXT
         return " ＞ 成功"
       end
 
-      if sendMode > 1
-        return " ＞ 決定的成功(#{dice_now}+#{skill_mod}=#{crit_num})"
-      end
-
-      return " ＞ 決定的成功(#{crit_num})"
+      return " ＞ 決定的成功(#{dice_now}+#{skill_mod}=#{crit_num})"
 
     elsif total_n <= diff
       return " ＞ 成功"

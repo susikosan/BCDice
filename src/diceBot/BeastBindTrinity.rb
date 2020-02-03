@@ -13,7 +13,7 @@ class BeastBindTrinity < DiceBot
 
   def initialize
     super
-    @sendMode = 2
+
     @sortType = 0
     @d66Type = 2
   end
@@ -30,7 +30,7 @@ class BeastBindTrinity < DiceBot
     return <<INFO_MESSAGE_TEXT
 ・判定　(nBB+m%w@x#y$z&v)
 　n個のD6を振り、出目の大きい2個から達成値を算出。修正mも可能。
-　
+
 　%w、@x、#y、$z、&vはすべて省略可能。
 ＞%w：現在の人間性が w であるとして、クリティカル値(C値)を計算。
 ・省略した場合、C値=12として達成値を算出する。
@@ -269,12 +269,8 @@ INFO_MESSAGE_TEXT
       showstring += "#{signOfInequality}#{diff}"
     end
 
-    if sendMode > 0 # 出力文の完成
-      if /[^\d\[\]]+/ =~ output
-        output = "#{@nick_e}: (#{showstring}) ＞ #{output} ＞ #{total_n}"
-      else
-        output = "#{@nick_e}: (#{showstring}) ＞ #{total_n}"
-      end
+    if /[^\d\[\]]+/ =~ output
+      output = "#{@nick_e}: (#{showstring}) ＞ #{output} ＞ #{total_n}"
     else
       output = "#{@nick_e}: (#{showstring}) ＞ #{total_n}"
     end

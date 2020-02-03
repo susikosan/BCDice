@@ -3,7 +3,7 @@
 class FutariSousa < DiceBot
   def initialize
     super
-    @sendMode = 2
+
     @d66Type = 2
 
     @success_threshold = 4 # 成功の目標値（固定）

@@ -5,7 +5,7 @@ class EmbryoMachine < DiceBot
 
   def initialize
     super
-    @sendMode = 2
+
     @sortType = 1
   end
 

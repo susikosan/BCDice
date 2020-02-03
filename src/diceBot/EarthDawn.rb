@@ -5,7 +5,7 @@ class EarthDawn < DiceBot
 
   def initialize
     super
-    @sendMode = 2
+
     @sortType = 1
   end
 

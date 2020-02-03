@@ -46,7 +46,7 @@ class KillDeathBusiness_Korean < DiceBot
 
   def initialize
     super
-    @sendMode = 2
+
     @sortType = 1
     @d66Type = 2
   end

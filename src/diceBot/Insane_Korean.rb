@@ -8,7 +8,7 @@ class Insane_Korean < DiceBot
 
   def initialize
     super
-    @sendMode = 2
+
     @sortType = 3
     @d66Type = 2
   end

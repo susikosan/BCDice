@@ -392,15 +392,9 @@ class SwordWorld < DiceBot
 
     totalText = (totalValue + addValue).to_s
 
-    if sendMode > 1 # 表示モード２以上
-      output += "2D:[#{diceResults.join(' ')}]=#{diceResultTotals.join(',')}"
-      rateResultsText = rateResults.join(',')
-      output += " ＞ #{rateResultsText}" unless rateResultsText == totalText
-    elsif sendMode > 0 # 表示モード１以上
-      output += "2D:#{diceResultTotals.join(',')}"
-    else # 表示モード０
-      output += totalValue.to_s
-    end
+    output += "2D:[#{diceResults.join(' ')}]=#{diceResultTotals.join(',')}"
+    rateResultsText = rateResults.join(',')
+    output += " ＞ #{rateResultsText}" unless rateResultsText == totalText
 
     if diceOnlyTotal <= 2
       return "#{output} ＞ 自動的失敗"

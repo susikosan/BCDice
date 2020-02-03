@@ -5,7 +5,6 @@ class ArsMagica < DiceBot
 
   def initialize
     super
-    @sendMode = 2
   end
 
   def gameName
@@ -135,9 +134,7 @@ INFO_MESSAGE_TEXT
       total = die * crit_mul
       crit_dice = crit_dice.sub(/,$/, '')
       output += total.to_s
-      if sendMode != 0
-        output += "[1,#{crit_dice}]"
-      end
+      output += "[1,#{crit_dice}]"
       total += bonus
       if bonus > 0
         output += "+#{bonus} ＞ #{total}"

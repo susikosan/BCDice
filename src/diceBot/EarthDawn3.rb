@@ -7,7 +7,7 @@ class EarthDawn3 < EarthDawn
 
   def initialize
     super
-    @sendMode = 2
+
     @sortType = 1
   end
 

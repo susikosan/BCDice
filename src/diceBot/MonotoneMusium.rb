@@ -6,7 +6,6 @@ class MonotoneMusium < DiceBot
   def initialize
     super
 
-    @sendMode = 2
     @d66Type = 1
     @sortType = 1
   end

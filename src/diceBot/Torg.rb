@@ -5,7 +5,6 @@ class Torg < DiceBot
 
   def initialize
     super
-    @sendMode = 2
   end
 
   def gameName

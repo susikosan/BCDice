@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 require "dice/choice"
+require "dice/AddDice"
 require "dice/UpperDice"
 require "utils/normalize"
 
@@ -21,6 +22,7 @@ class DiceBot
   end
 
   include Choice
+  include AddDice
   include UpperDice
   include Normalize
 
@@ -106,6 +108,8 @@ class DiceBot
 
     if (text = eval_choice(command))
       return text
+    elsif (text = eval_add_dice(command))
+      return text
     elsif (text = eval_upper_dice(command))
       return text
     end
@@ -187,10 +191,6 @@ class DiceBot
 
   def d66(*args)
     @@bcdice.getD66Value(*args)
-  end
-
-  def rollDiceAddingUp(*arg)
-    @@bcdice.rollDiceAddingUp(*arg)
   end
 
   def getHelpMessage

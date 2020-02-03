@@ -171,9 +171,6 @@ class BCDiceCore
     output, secret = rollD66(arg)
     return output, secret unless output.nil?
 
-    output, secret = checkAddRoll(arg)
-    return output, secret unless output.nil?
-
     output, secret = checkBDice(arg)
     return output, secret unless output.nil?
 
@@ -182,18 +179,6 @@ class BCDiceCore
 
     output = '1'
     secret = false
-    return output, secret
-  end
-
-  def checkAddRoll(arg)
-    debug("check add roll")
-
-    dice = AddDice.new(@diceBot, @randomizer)
-    output = dice.rollDice(arg)
-    return nil if output == '1'
-
-    secret = (/S[-\d]+D[\d+-]+/ === arg)
-
     return output, secret
   end
 
@@ -681,9 +666,8 @@ class BCDiceCore
     return string
   end
 
-  def rollDiceAddingUp(*arg)
-    dice = AddDice.new(@diceBot, @randomizer)
-    dice.rollDiceAddingUp(*arg)
+  def rollDiceAddingUp(string, isCheckSuccess = false)
+    @diceBot.rollDiceAddingUp(string, isCheckSuccess)
   end
 
   # [1...4]D[2...7] -> 2D7 のように[n...m]をランダムな数値へ変換

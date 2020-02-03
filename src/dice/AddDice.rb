@@ -3,21 +3,20 @@
 require "utils/ArithmeticEvaluator"
 require "utils/normalize"
 
-class AddDice
-  include Normalize
+module AddDice
+  # 加算ダイスを評価する
+  #
+  # @param [String] command
+  # @return [String]
+  # @return [nil] 加算ダイスでない時にnilを返す
+  def eval_add_dice(command)
+    string = command.strip
+    m = %r{^(S)?(([\d\+\*\-]*[\d]+D[\d/UR@]*[\d\+\*\-D/UR]*)(([<>=]+)([?\-\d]+))?)($|\s)}i.match(string)
+    unless m
+      return nil
+    end
 
-  def initialize(diceBot, randomizer)
-    @diceBot = diceBot
-    @randomizer = randomizer
-  end
-
-  ####################             加算ダイス        ########################
-
-  def rollDice(string)
-    debug("AddDice.rollDice() begin string", string)
-
-    m = %r{(^|\s)S?(([\d\+\*\-]*[\d]+D[\d/UR@]*[\d\+\*\-D/UR]*)(([<>=]+)([?\-\d]+))?)($|\s)}i.match(string)
-    return "1" unless m
+    @secret = !m[1].nil?
 
     string = m[2]
     judgeText = m[4] # '>=10'といった成否判定文字
@@ -71,11 +70,11 @@ class AddDice
       string += "#{signOfInequality}#{diffText}"
     end
 
-    @diceBot.setDiceText(output)
-    @diceBot.setDiffText(diffText)
+    setDiceText(output)
+    setDiffText(diffText)
 
     # ダイス目による補正処理（現状ナイトメアハンターディープ専用）
-    addText, revision = @diceBot.getDiceRevision(n_max, dice_max, total_n)
+    addText, revision = getDiceRevision(n_max, dice_max, total_n)
     debug('addText, revision', addText, revision)
 
     if output =~ /[^\d\[\]]+/
@@ -93,10 +92,10 @@ class AddDice
     end
 
     # ダイスロールによるポイント等の取得処理用（T&T悪意、ナイトメアハンター・ディープ宿命、特命転校生エクストラパワーポイントなど）
-    output += @diceBot.getDiceRolledAdditionalText(n1, n_max, dice_max)
+    output += getDiceRolledAdditionalText(n1, n_max, dice_max)
 
     if (dice_cnt == 0) || (dice_max == 0)
-      output = '1'
+      return nil
     end
 
     debug("AddDice.rollDice() end output", output)
@@ -115,11 +114,11 @@ class AddDice
     dice_cnt_total = 0
     double_check = false
 
-    if @diceBot.sameDiceRerollCount != 0 # 振り足しありのゲームでダイスが二個以上
-      if @diceBot.sameDiceRerollType <= 0 # 判定のみ振り足し
+    if sameDiceRerollCount != 0 # 振り足しありのゲームでダイスが二個以上
+      if sameDiceRerollType <= 0 # 判定のみ振り足し
         debug('判定のみ振り足し')
         double_check = true if isCheckSuccess
-      elsif  @diceBot.sameDiceRerollType <= 1 # ダメージのみ振り足し
+      elsif  sameDiceRerollType <= 1 # ダメージのみ振り足し
         debug('ダメージのみ振り足し')
         double_check = true unless isCheckSuccess
       else # 両方振り足し
@@ -152,7 +151,7 @@ class AddDice
         critical = m[4].to_i
         slashMark = m[5]
 
-        return emptyResult if  (critical != 0) && !@diceBot.is2dCritical
+        return emptyResult if  (critical != 0) && !is2dCritical
         return emptyResult if  dice_max > $DICE_MAXNUM
 
         dice_max, dice_now, output_tmp, n1_count, max_number_tmp, result_dice_count =
@@ -211,9 +210,9 @@ class AddDice
 
       debug('dice_wk', dice_wk)
       debug('dice_max', dice_max)
-      debug('(sortType & 1)', (@diceBot.sortType & 1))
+      debug('(sortType & 1)', (sortType & 1))
 
-      dice_dat = rollLocal(dice_wk, dice_max, (@diceBot.sortType & 1))
+      dice_dat = rollLocal(dice_wk, dice_max, (sortType & 1))
       debug('dice_dat', dice_dat)
 
       dice_new = dice_dat[0]
@@ -234,12 +233,12 @@ class AddDice
         addDiceArrayByAddDiceCount(dice_dat, dice_max, dice_arry, dice_wk)
       end
 
-      @diceBot.check2dCritical(critical, dice_new, dice_arry, loop_count)
+      check2dCritical(critical, dice_new, dice_arry, loop_count)
       loop_count += 1
     end
 
     # ダイス目文字列からダイス値を変更する場合の処理（現状クトゥルフ・テック専用）
-    dice_now = @diceBot.changeDiceValueByDiceText(dice_now, dice_str, isCheckSuccess, dice_max)
+    dice_now = changeDiceValueByDiceText(dice_now, dice_str, isCheckSuccess, dice_max)
 
     output = ""
     output += "#{dice_now}[#{dice_str}]"
@@ -256,7 +255,7 @@ class AddDice
       count_bucket[val] += 1
     end
 
-    reroll_threshold = @diceBot.sameDiceRerollCount == 1 ? roll_times : @diceBot.sameDiceRerollCount
+    reroll_threshold = sameDiceRerollCount == 1 ? roll_times : sameDiceRerollCount
     count_bucket.each do |_, num|
       if num >= reroll_threshold
         dice_queue.push(num)
@@ -323,7 +322,7 @@ class AddDice
   end
 
   def getD66Value(mode = nil)
-    mode ||= @diceBot.d66Type
+    mode ||= d66Type
 
     isSwap = (mode > 1)
     getD66(isSwap)
@@ -385,28 +384,28 @@ class AddDice
 
     if (dice_max == 100) && (dice_cnt == 1)
       debug('1D100判定')
-      return @diceBot.check_1D100(*check_param)
+      return check_1D100(*check_param)
     end
 
     if (dice_max == 20) && (dice_cnt == 1)
       debug('1d20判定')
-      return @diceBot.check_1D20(*check_param)
+      return check_1D20(*check_param)
     end
 
     if dice_max == 10
       debug('d10ベース判定')
-      return @diceBot.check_nD10(*check_param)
+      return check_nD10(*check_param)
     end
 
     if dice_max == 6
       if dice_cnt == 2
         debug('2d6判定')
-        result = @diceBot.check_2D6(*check_param)
+        result = check_2D6(*check_param)
         return result unless result.empty?
       end
 
       debug('xD6判定')
-      return @diceBot.check_nD6(*check_param)
+      return check_nD6(*check_param)
     end
 
     return ""

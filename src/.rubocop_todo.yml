@@ -344,3 +344,7 @@ Style/TrivialAccessors:
 # URISchemes: http, https
 Metrics/LineLength:
   Max: 450
+
+Metrics/ModuleLength:
+  Exclude:
+    - 'dice/AddDice.rb'

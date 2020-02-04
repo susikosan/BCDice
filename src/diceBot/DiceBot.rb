@@ -2,6 +2,7 @@
 
 require "dice/choice"
 require "dice/AddDice"
+require "dice/RerollDice"
 require "dice/UpperDice"
 require "utils/normalize"
 
@@ -23,6 +24,7 @@ class DiceBot
 
   include Choice
   include AddDice
+  include RerollDice
   include UpperDice
   include Normalize
 
@@ -109,6 +111,8 @@ class DiceBot
     if (text = eval_choice(command))
       return text
     elsif (text = eval_add_dice(command))
+      return text
+    elsif (text = eval_reroll_dice(command))
       return text
     elsif (text = eval_upper_dice(command))
       return text

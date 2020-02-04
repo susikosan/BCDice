@@ -174,9 +174,6 @@ class BCDiceCore
     output, secret = checkBDice(arg)
     return output, secret unless output.nil?
 
-    output, secret = checkRnDice(arg)
-    return output, secret unless output.nil?
-
     output = '1'
     secret = false
     return output, secret
@@ -189,42 +186,6 @@ class BCDiceCore
     return nil if output == '1'
 
     secret = (/S[\d]+B[\d]+/i === arg)
-
-    return output, secret
-  end
-
-  def checkRnDice(arg)
-    debug('check xRn roll arg', arg)
-
-    return nil unless /(S)?[\d]+R[\d]+/i === arg
-
-    secret = !Regexp.last_match(1).nil?
-
-    output = @diceBot.dice_command_xRn(arg, "")
-    return nil if  output.nil? || (output == '1')
-
-    if output.empty?
-      dice = RerollDice.new(@diceBot, @randomizer)
-      output = dice.rollDice(arg)
-    end
-
-    return nil if output.nil? || (output == '1')
-
-    debug('xRn output', output)
-
-    return output, secret
-  end
-
-  def checkUpperRoll(arg)
-    debug("check upper roll")
-
-    return nil unless /(S)?[\d]+U[\d]+/i === arg
-
-    secret = !Regexp.last_match(1).nil?
-
-    dice = UpperDice.new(@diceBot, @randomizer)
-    output = dice.rollDice(arg)
-    return nil if output == '1'
 
     return output, secret
   end

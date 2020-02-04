@@ -348,3 +348,4 @@ Metrics/LineLength:
 Metrics/ModuleLength:
   Exclude:
     - 'dice/AddDice.rb'
+    - 'dice/RerollDice.rb'

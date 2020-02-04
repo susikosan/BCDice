@@ -2,34 +2,26 @@
 
 require "utils/normalize"
 
-class RerollDice
+module RerollDice
   include Normalize
 
-  def initialize(diceBot, randomizer)
-    @diceBot = diceBot
-    @randomizer = randomizer
-  end
-
-  ####################        個数振り足しダイス     ########################
-  def rollDice(string)
-    begin
-      output = rollDiceCatched(string)
-    rescue StandardError => e
-      output = "#{string} ＞ " + e.to_s
+  # @param [String] string
+  # @return [String | nil]
+  def eval_reroll_dice(string)
+    output = dice_command_xRn(string, "")
+    if output != '1' && !output.nil? && !output.empty?
+      return output
     end
 
-    return ": #{output}"
-  end
-
-  def rollDiceCatched(string)
     debug('RerollDice.rollDice string', string)
     string = string.strip
 
     m = /^S?(\d+R\d+(?:\+\d+R\d+)*)(?:\[(\d+)\])?(?:([<>=]+)(\d+))?(?:@(\d+))?$/.match(string)
     unless m
-      debug("is invaild rdice", string)
-      return '1'
+      return nil
     end
+
+    @secret = string[0] == 'S'
 
     string, braceThreshold, operator, conditionValue, atmarkThreshold = m.captures
 
@@ -54,7 +46,7 @@ class RerollDice
     numberSpot1Total = 0
     loopCount = 0
 
-    while !diceQueue.empty? && @diceBot.should_reroll?(loopCount)
+    while !diceQueue.empty? && should_reroll?(loopCount)
       # xRn
       x, n, depth = diceQueue.shift
       loopCount += 1
@@ -74,7 +66,7 @@ class RerollDice
                       dice_list.count { |val| val >= rerollNumber }
                     end
 
-      if @diceBot.sortType & 2 != 0
+      if sortType & 2 != 0
         dice_list = dice_list.sort()
       end
       text = dice_list.join(",")
@@ -96,7 +88,7 @@ class RerollDice
     string += "[#{rerollNumber}]#{signOfInequality}#{diff}"
 
     debug("string", string)
-    output += @diceBot.getGrichText(numberSpot1Total, dice_cnt_total, successCount)
+    output += getGrichText(numberSpot1Total, dice_cnt_total, successCount)
 
     output = "(#{string}) ＞ #{output}"
 
@@ -104,14 +96,16 @@ class RerollDice
       output = "(#{string}) ＞ ... ＞ 回転数#{round} ＞ 成功数#{successCount}"
     end
 
-    return output
+    return ": #{output}"
+  rescue InvalidJudgeRule
+    return ": #{string} ＞ 条件が間違っています。2R6>=5 あるいは 2R6[5] のように振り足し目標値を指定してください。"
   end
 
   def getCondition(operator, conditionValue)
     if operator && conditionValue
       operator = marshalSignOfInequality(operator)
       conditionValue = conditionValue.to_i
-    elsif (m = /([<>=]+)(\d+)/.match(@diceBot.defaultSuccessTarget))
+    elsif (m = /([<>=]+)(\d+)/.match(defaultSuccessTarget))
       operator = marshalSignOfInequality(m[1])
       conditionValue = m[2].to_i
     end
@@ -124,17 +118,13 @@ class RerollDice
       braceThreshold.to_i
     elsif atmarkThreshold
       atmarkThreshold.to_i
-    elsif @diceBot.rerollNumber != 0
-      @diceBot.rerollNumber
+    elsif rerollNumber != 0
+      rerollNumber
     elsif conditionValue
       conditionValue.to_i
     else
-      raiseErroForJudgeRule()
+      raise InvalidJudgeRule
     end
-  end
-
-  def raiseErroForJudgeRule()
-    raise "条件が間違っています。2R6>=5 あるいは 2R6[5] のように振り足し目標値を指定してください。"
   end
 
   def checkReRollRule(dice_max, signOfInequality, diff) # 振り足しロールの条件確認
@@ -154,7 +144,9 @@ class RerollDice
     end
 
     unless valid
-      raiseErroForJudgeRule()
+      raise InvalidJudgeRule
     end
   end
 end
+
+class InvalidJudgeRule < StandardError; end

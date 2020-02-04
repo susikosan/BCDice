@@ -5,6 +5,7 @@ require "dice/calc"
 require "dice/AddDice"
 require "dice/RerollDice"
 require "dice/UpperDice"
+require "dice/d66_dice"
 require "utils/normalize"
 
 class DiceBot
@@ -28,6 +29,7 @@ class DiceBot
   include AddDice
   include RerollDice
   include UpperDice
+  include D66Dice
   include Normalize
 
   # 接頭辞（反応するコマンド）を設定する
@@ -114,7 +116,8 @@ class DiceBot
           eval_calc(command) ||
           eval_add_dice(command) ||
           eval_reroll_dice(command) ||
-          eval_upper_dice(command)
+          eval_upper_dice(command) ||
+          eval_d66_dice(command)
     return ret
   end
 
@@ -191,7 +194,7 @@ class DiceBot
   end
 
   def d66(*args)
-    @@bcdice.getD66Value(*args)
+    getD66Value(*args)
   end
 
   def getHelpMessage
@@ -340,14 +343,10 @@ class DiceBot
     return text, num
   end
 
-  def getD66(isSwap)
-    return bcdice.getD66(isSwap)
-  end
-
   # D66 ロール用（スワップ、たとえば出目が【６，４】なら「６４」ではなく「４６」とする
   def get_table_by_d66_swap(table)
     isSwap = true
-    number = bcdice.getD66(isSwap)
+    number = getD66(isSwap)
     return get_table_by_number(number, table), number
   end
 

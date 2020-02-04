@@ -268,7 +268,7 @@ MESSAGETEXT
 
   def getPersonTable(table)
     isSwap = true
-    number = bcdice.getD66(isSwap)
+    number = getD66(isSwap)
     debug("getPersonTable number", number)
 
     " ＞ #{number}:" + get_table_by_number(number, table)

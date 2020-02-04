@@ -140,9 +140,6 @@ class BCDiceCore
       return output, @diceBot.secret?
     end
 
-    output, secret = rollD66(arg)
-    return output, secret unless output.nil?
-
     output, secret = checkBDice(arg)
     return output, secret unless output.nil?
 
@@ -160,24 +157,6 @@ class BCDiceCore
     secret = (/S[\d]+B[\d]+/i === arg)
 
     return output, secret
-  end
-
-  def getTableIndexDiceValueAndDiceText(dice)
-    if /(\d+)D(\d+)/i === dice
-      diceCount = Regexp.last_match(1)
-      diceType = Regexp.last_match(2)
-      value, diceText = roll(diceCount, diceType)
-      return value, diceText
-    end
-
-    string, _secret, _count, swapMarker = getD66Infos(dice)
-    unless  string.nil?
-      value = getD66ValueByMarker(swapMarker)
-      diceText = (value / 10).to_s + "," + (value % 10).to_s
-      return value, diceText
-    end
-
-    return nil
   end
 
   def rollTableMessageDiceText(text)
@@ -339,93 +318,6 @@ class BCDiceCore
       output += @diceBot.getGrichText(numberSpot1, dice_cnt_total, suc)
     end
     output = ": (#{string}) ＞ #{output}"
-
-    return output
-  end
-
-  ####################             D66ダイス        ########################
-  def rollD66(string)
-    return nil unless /^S?D66/i === string
-    return nil if @diceBot.d66Type == 0
-
-    debug("match D66 roll")
-    output, secret = d66dice(string)
-
-    return output, secret
-  end
-
-  def d66dice(string)
-    string = string.upcase
-    secret = false
-    output = '1'
-
-    string, secret, count, swapMarker = getD66Infos(string)
-    return output, secret if string.nil?
-
-    debug('d66dice count', count)
-
-    d66List = []
-    count.times do |_i|
-      d66List << getD66ValueByMarker(swapMarker)
-    end
-    d66Text = d66List.join(',')
-    debug('d66Text', d66Text)
-
-    output = ": (#{string}) ＞ #{d66Text}"
-
-    return output, secret
-  end
-
-  def getD66Infos(string)
-    debug("getD66Infos, string", string)
-
-    return nil unless /(^|\s)(S)?((\d+)?D66(N|S)?)(\s|$)/i === string
-
-    secret = !Regexp.last_match(2).nil?
-    string = Regexp.last_match(3)
-    count = (Regexp.last_match(4) || 1).to_i
-    swapMarker = (Regexp.last_match(5) || "").upcase
-
-    return string, secret, count, swapMarker
-  end
-
-  def getD66ValueByMarker(swapMarker)
-    case swapMarker
-    when "S"
-      isSwap = true
-      getD66(isSwap)
-    when "N"
-      isSwap = false
-      getD66(isSwap)
-    else
-      getD66Value()
-    end
-  end
-
-  def getD66Value(mode = nil)
-    mode ||= @diceBot.d66Type
-
-    isSwap = (mode > 1)
-    getD66(isSwap)
-  end
-
-  def getD66(isSwap)
-    output = 0
-
-    dice_a = @randomizer.rand(6)
-    dice_b = @randomizer.rand(6)
-    debug("dice_a", dice_a)
-    debug("dice_b", dice_b)
-
-    if isSwap && (dice_a > dice_b)
-      # 大小でスワップするタイプ
-      output = dice_a + dice_b * 10
-    else
-      # 出目そのまま
-      output = dice_a * 10 + dice_b
-    end
-
-    debug("output", output)
 
     return output
   end

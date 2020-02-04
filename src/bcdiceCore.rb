@@ -62,7 +62,7 @@ class BCDiceCore
 
   def eval(command)
     setMessage(command)
-    recievePublicMessage("")
+    recievePublicMessage()
 
     return @roll_result
   end
@@ -101,35 +101,7 @@ class BCDiceCore
     @message = @messageOriginal
   end
 
-  def printErrorMessage(e)
-    append_message("error " + e.to_s + e.backtrace.join("\n"))
-  end
-
-  def recievePublicMessage(nick_e)
-    recievePublicMessageCatched(nick_e)
-  rescue StandardError => e
-    printErrorMessage(e)
-  end
-
-  def recievePublicMessageCatched(_nick_e)
-    # ダイスロールの処理
-    executeDiceRoll
-
-    # 四則計算代行
-    if /(^|\s)C([-\d]+)\s*$/i =~ @message
-      output = Regexp.last_match(2)
-      if output != ""
-        append_message(": 計算結果 ＞ #{output}")
-      end
-    end
-
-    # ここから大文字・小文字を考慮するようにメッセージを変更
-    changeMessageOriginal
-
-    debug("\non_public end")
-  end
-
-  def executeDiceRoll
+  def recievePublicMessage
     debug("executeDiceRoll begin")
     debug("channel", @channel)
 

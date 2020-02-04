@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 require "dice/choice"
+require "dice/calc"
 require "dice/AddDice"
 require "dice/RerollDice"
 require "dice/UpperDice"
@@ -23,6 +24,7 @@ class DiceBot
   end
 
   include Choice
+  include Calc
   include AddDice
   include RerollDice
   include UpperDice
@@ -108,17 +110,12 @@ class DiceBot
       return text
     end
 
-    if (text = eval_choice(command))
-      return text
-    elsif (text = eval_add_dice(command))
-      return text
-    elsif (text = eval_reroll_dice(command))
-      return text
-    elsif (text = eval_upper_dice(command))
-      return text
-    end
-
-    return nil
+    ret = eval_choice(command) ||
+          eval_calc(command) ||
+          eval_add_dice(command) ||
+          eval_reroll_dice(command) ||
+          eval_upper_dice(command)
+    return ret
   end
 
   # ダイスボット設定後に行う処理

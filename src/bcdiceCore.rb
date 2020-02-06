@@ -45,8 +45,6 @@ class BCDiceCore
 
   include Normalize
 
-  attr_reader :roll_result
-
   def initialize(game_type: "DiceBot", rands: nil, test_mode: false)
     @nick_e = ""
     @tnick = ""
@@ -78,8 +76,6 @@ class BCDiceCore
     @diceBot.bcdice = self
     diceBot.randomizer = @randomizer
   end
-
-  attr_reader :nick_e
 
   def setMessage(message)
     # 空白が含まれる場合、最初の部分だけを取り出す

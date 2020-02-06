@@ -140,9 +140,6 @@ class BCDiceCore
       return output, @diceBot.secret?
     end
 
-    output, secret = checkBDice(arg)
-    return output, secret unless output.nil?
-
     output = '1'
     secret = false
     return output, secret

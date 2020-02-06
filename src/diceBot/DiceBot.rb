@@ -2,6 +2,7 @@
 
 require "dice/choice"
 require "dice/calc"
+require "dice/barabara_dice"
 require "dice/AddDice"
 require "dice/RerollDice"
 require "dice/UpperDice"
@@ -27,6 +28,7 @@ class DiceBot
   include Choice
   include Calc
   include AddDice
+  include BarabaraDice
   include RerollDice
   include UpperDice
   include D66Dice
@@ -115,6 +117,7 @@ class DiceBot
     ret = eval_choice(command) ||
           eval_calc(command) ||
           eval_add_dice(command) ||
+          eval_barabara_dice(command) ||
           eval_reroll_dice(command) ||
           eval_upper_dice(command) ||
           eval_d66_dice(command)

@@ -27,10 +27,11 @@ rand:
 1/6
 ============================
 input:
-1DM<+1
+1DM+1
 output:
-
+TrinitySeven : (1DM+1) [1]+1 ＞ 2
 rand:
+1/6
 ============================
 input:
 1DM-1
@@ -42,8 +43,9 @@ rand:
 input:
 2DM1-1
 output:
+TrinitySeven : (2DM1-1) [1,6]→[6,7]-1 ＞ 41
 rand:
-1/6
+1/6,6/6
 ============================
 input:
 2DM1+1
@@ -198,12 +200,14 @@ rand:100/100
 input:
 TR-1<=50+20
 output:
-rand:100/20
+TrinitySeven : (TR-1<=50+20) ＞ 20[20] ＞ 成功
+rand:20/100
 ============================
 input:
 TR-1<=50+20
 output:
-rand:100/90
+TrinitySeven : (TR-1<=50+20) ＞ 90[90] ＞ 失敗
+rand:90/100
 ============================
 input:
 TR+1<=50-20
@@ -218,13 +222,14 @@ rand:100/100
 input:
 TR+1<=50-20
 output:
-rand:100/20
+TrinitySeven : (TR+1<=50-20) ＞ 20[20] ＞ 成功
+rand:20/100
 ============================
 input:
 TR+1<=50-20
 output:
-rand:100/90
-
+TrinitySeven : (TR+1<=50-20) ＞ 90[90] ＞ 失敗
+rand:90/100
 ============================
 input:
 TR+1<=50
@@ -239,13 +244,14 @@ rand:100/100
 input:
 TR-1<=50
 output:
-rand:100/20
+TrinitySeven : (TR-1<=50) ＞ 20[20] ＞ 成功
+rand:20/100
 ============================
 input:
 TR-1<=50
 output:
-rand:100/90
-
+TrinitySeven : (TR-1<=50) ＞ 90[90] ＞ 失敗
+rand:90/100
 ============================
 input:
 TR<=50+20
@@ -260,12 +266,14 @@ rand:100/100
 input:
 TR<=50+20
 output:
-rand:100/20
+TrinitySeven : (TR<=50+20) ＞ 20[20] ＞ 成功
+rand:20/100
 ============================
 input:
 TR<=50+20
 output:
-rand:100/90
+TrinitySeven : (TR<=50+20) ＞ 90[90] ＞ 失敗
+rand:90/100
 ============================
 input:
 TR<=50
@@ -280,17 +288,14 @@ rand:100/100
 input:
 TR<=50
 output:
-rand:100/20
+TrinitySeven : (TR<=50) ＞ 20[20] ＞ 成功
+rand:20/100
 ============================
 input:
 TR<=50
 output:
-rand:100/90
-============================
-input:
-TRNAME
-output:
-rand:
+TrinitySeven : (TR<=50) ＞ 90[90] ＞ 失敗
+rand:90/100
 ============================
 input:
 TRNAME

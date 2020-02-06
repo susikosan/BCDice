@@ -76,6 +76,8 @@ MESSAGETEXT
     end
 
     return nil
+  rescue UnknownCommandError => e
+    return e.message
   end
 
   def getXrmDamage(type)
@@ -103,9 +105,9 @@ MESSAGETEXT
     when /^LRM15$/i
       [[5,  5,  6,  9,  9,  9,  9,  12, 12, 15, 15], true]
     when /^LRM20$/i
-      [[6,  6,  9,  12,  12, 12, 12, 16, 16, 20, 20], true]
+      [[6,  6,  9,  12, 12, 12, 12, 16, 16, 20, 20], true]
     else
-      raise "unknown XRM type:#{type}"
+      raise UnknownCommandError, "unknown XRM type: #{type}"
     end
   end
 
@@ -180,7 +182,7 @@ MESSAGETEXT
     when /^RL$/i
       ['右脚', '右脚', '右脚', '右脚', '右脚', '右脚']
     else
-      raise "unknown hit part side :#{side}"
+      raise UnknownCommandError, "unknown hit part side: #{side}"
     end
   end
 
@@ -274,7 +276,7 @@ MESSAGETEXT
     end
 
     unless damages.empty?
-      raise "damages rest!! #{damages.inspect()}"
+      raise UnknownCommandError, "damages rest!! #{damages.inspect()}"
     end
 
     result = damageTexts.join(" ／ ")
@@ -364,4 +366,6 @@ MESSAGETEXT
 
     return text
   end
+
+  class UnknownCommandError < StandardError; end
 end

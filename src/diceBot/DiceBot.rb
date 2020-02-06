@@ -258,12 +258,8 @@ class DiceBot
 
   def rollDiceCommandCatched(command)
     result = nil
-    begin
-      debug('call rollDiceCommand command', command)
-      result, secret_flg = rollDiceCommand(command)
-    rescue StandardError => e
-      debug("executeCommand exception", e.to_s, e.backtrace.join("\n"))
-    end
+    debug('call rollDiceCommand command', command)
+    result, secret_flg = rollDiceCommand(command)
 
     debug('rollDiceCommand result', result)
 

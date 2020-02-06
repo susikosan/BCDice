@@ -46,23 +46,29 @@ class BCDiceCore
   include Normalize
 
   def initialize(game_type: "DiceBot", rands: nil, test_mode: false)
-    @nick_e = ""
-    @tnick = ""
     @isTest = test_mode
-
     @randomizer = rands ? StaticRands.new(rands) : Randomizer.new
-
-    @channel = "" # dummy
-    @roll_result = ""
 
     setGameByTitle(game_type)
   end
 
-  def eval(command)
-    setMessage(command)
-    recievePublicMessage()
+  # @param [String] str
+  # @param [String] 結果。評価できなかった場合には空文字を返す
+  def eval(str)
+    head = str.split(' ', 2).first
+    @messageOriginal = parren_killer(head)
+    @message = @messageOriginal.upcase
 
-    return @roll_result
+    output = @diceBot.eval(@message)
+    if output.nil?
+      return ""
+    end
+
+    if @isTest && @diceBot.secret?
+      output += "###secret dice###"
+    end
+
+    return output
   end
 
   def getGameType
@@ -77,17 +83,6 @@ class BCDiceCore
     diceBot.randomizer = @randomizer
   end
 
-  def setMessage(message)
-    # 空白が含まれる場合、最初の部分だけを取り出す
-    messageToSet = message.split(/\s/, 2).first
-
-    debug("setMessage messageToSet", messageToSet)
-
-    @messageOriginal = parren_killer(messageToSet)
-    @message = @messageOriginal.upcase
-    debug("@message", @message)
-  end
-
   def getOriginalMessage
     @messageOriginal
   end
@@ -97,49 +92,9 @@ class BCDiceCore
     @message = @messageOriginal
   end
 
-  def recievePublicMessage
-    debug("executeDiceRoll begin")
-    debug("channel", @channel)
-
-    output, secret = dice_command
-
-    unless  secret
-      debug("executeDiceRoll @channel", @channel)
-      append_message(output) if output != "1"
-      return
-    end
-
-    # 隠しロール
-    return if output == "1"
-
-    if @isTest
-      output += "###secret dice###"
-    end
-
-    broadmsg(output)
-  end
-
   ###########################################################################
   # **                         各種コマンド処理
   ###########################################################################
-
-  #=========================================================================
-  # **                           コマンド分岐
-  #=========================================================================
-  def dice_command # ダイスコマンドの分岐処理
-    arg = @message.upcase
-
-    debug('dice_command arg', arg)
-
-    output = @diceBot.eval(@message)
-    if output
-      return output, @diceBot.secret?
-    end
-
-    output = '1'
-    secret = false
-    return output, secret
-  end
 
   def rollTableMessageDiceText(text)
     message = text.gsub(/(\d+)D(\d+)/) do
@@ -366,24 +321,6 @@ class BCDiceCore
     end
 
     return " ＞ 失敗"
-  end
-
-  ###########################################################################
-  # **                              出力関連
-  ###########################################################################
-
-  def broadmsg(output)
-    debug("broadmsg output, nick", output)
-
-    if output == "1"
-      return
-    end
-
-    append_message(output)
-  end
-
-  def append_message(message)
-    @roll_result += message
   end
 
   ####################         テキスト前処理        ########################

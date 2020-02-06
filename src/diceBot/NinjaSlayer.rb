@@ -137,7 +137,7 @@ MESSAGETEXT
   def executeEV(ev)
     command = bRollCommand(ev.num, ev.difficulty)
 
-    rollResult = bcdice.bdice(command).sub(B_ROLL_RESULT_HEAD_RE, '')
+    rollResult = eval_barabara_dice(command).sub(B_ROLL_RESULT_HEAD_RE, '')
     return rollResult unless ev.targetValue
 
     m = /成功数(\d+)/.match(rollResult)
@@ -156,7 +156,7 @@ MESSAGETEXT
   # @return [String] 近接攻撃結果
   def executeAT(at)
     command = bRollCommand(at.num, at.difficulty)
-    rollResult = bcdice.bdice(command).sub(B_ROLL_RESULT_HEAD_RE, '')
+    rollResult = eval_barabara_dice(command).sub(B_ROLL_RESULT_HEAD_RE, '')
 
     # バラバラロールの出目を取得する
     # TODO: バラバラロールの結果として、出目を配列で取得できるようにする

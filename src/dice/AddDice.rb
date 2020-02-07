@@ -362,7 +362,7 @@ module AddDice
 
     check_paramNew = [total_n, dice_n, signOfInequality, diff, dice_cnt, dice_max, n1, n_max]
 
-    text = getSuccessText(*check_paramNew)
+    text = getSuccessTextAddDice(*check_paramNew)
     text ||= ""
 
     if text.empty?
@@ -375,8 +375,8 @@ module AddDice
     return text
   end
 
-  def getSuccessText(*check_param)
-    debug('getSuccessText begin')
+  def getSuccessTextAddDice(*check_param)
+    debug('getSuccessTextAddDice begin')
 
     _total_n, _dice_n, _signOfInequality, _diff, dice_cnt, dice_max, = *check_param
 

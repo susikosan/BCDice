@@ -178,10 +178,6 @@ class DiceBot
     @randomizer.roll(1, max) - 1
   end
 
-  def check_suc(*params)
-    @@bcdice.check_suc(*params)
-  end
-
   def roll(*args)
     @@bcdice.roll(*args)
   end

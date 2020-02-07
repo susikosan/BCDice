@@ -327,16 +327,6 @@ class BCDiceCore
   def parren_killer(string)
     debug("parren_killer input", string)
 
-    while /^(.*?)\[(\d+[Dd]\d+)\](.*)/ =~ string
-      str_before = ""
-      str_after = ""
-      dice_cmd = Regexp.last_match(2)
-      str_before = Regexp.last_match(1) if Regexp.last_match(1)
-      str_after = Regexp.last_match(3) if Regexp.last_match(3)
-      rolled, = rollDiceAddingUp(dice_cmd)
-      string = "#{str_before}#{rolled}#{str_after}"
-    end
-
     string = changeRangeTextToNumberText(string)
 
     round_type = @diceBot.fractionType.to_sym

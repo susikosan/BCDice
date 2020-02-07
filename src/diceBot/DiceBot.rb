@@ -279,6 +279,47 @@ class DiceBot
     @diffText = diffText
   end
 
+  def check_hit(dice_now, signOfInequality, diff) # 成功数判定用
+    suc = 0
+
+    if  diff.is_a?(String)
+      unless /\d/ =~ diff
+        return suc
+      end
+
+      diff = diff.to_i
+    end
+
+    case signOfInequality
+    when /(<=|=<)/
+      if dice_now <= diff
+        suc += 1
+      end
+    when /(>=|=>)/
+      if dice_now >= diff
+        suc += 1
+      end
+    when /(<>)/
+      if dice_now != diff
+        suc += 1
+      end
+    when /[<]+/
+      if dice_now < diff
+        suc += 1
+      end
+    when /[>]+/
+      if dice_now > diff
+        suc += 1
+      end
+    when /[=]+/
+      if dice_now == diff
+        suc += 1
+      end
+    end
+
+    return suc
+  end
+
   def dice_command_xRn(_string, _nick_e)
     ''
   end

@@ -151,7 +151,7 @@ class BCDiceCore
       total += dice_now
 
       if dice_ul != ''
-        suc = check_hit(dice_now, dice_ul, dice_diff)
+        suc = @diceBot.check_hit(dice_now, dice_ul, dice_diff)
         cnt_suc += suc
       end
 
@@ -186,50 +186,6 @@ class BCDiceCore
   def dice_num(dice_str)
     dice_str = dice_str.to_s
     return dice_str.sub(/\[[\d,]+\]/, '').to_i
-  end
-
-  #==========================================================================
-  # **                            結果判定関連
-  #==========================================================================
-  def check_hit(dice_now, signOfInequality, diff) # 成功数判定用
-    suc = 0
-
-    if  diff.is_a?(String)
-      unless /\d/ =~ diff
-        return suc
-      end
-
-      diff = diff.to_i
-    end
-
-    case signOfInequality
-    when /(<=|=<)/
-      if dice_now <= diff
-        suc += 1
-      end
-    when /(>=|=>)/
-      if dice_now >= diff
-        suc += 1
-      end
-    when /(<>)/
-      if dice_now != diff
-        suc += 1
-      end
-    when /[<]+/
-      if dice_now < diff
-        suc += 1
-      end
-    when /[>]+/
-      if dice_now > diff
-        suc += 1
-      end
-    when /[=]+/
-      if dice_now == diff
-        suc += 1
-      end
-    end
-
-    return suc
   end
 
   ####################       ゲーム別成功度判定      ########################
@@ -297,7 +253,7 @@ class BCDiceCore
 
   def check_nDx(total_n, _dice_n, signOfInequality, diff, _dice_cnt, _dice_max, _n1, _n_max) # ゲーム別成功度判定(ダイスごちゃ混ぜ系)
     debug('check_nDx begin diff', diff)
-    success = check_hit(total_n, signOfInequality, diff)
+    success = @diceBot.check_hit(total_n, signOfInequality, diff)
     debug('check_nDx success', success)
 
     if success >= 1

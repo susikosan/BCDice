@@ -56,7 +56,7 @@ class BCDiceCore
   # @param [String] 結果。評価できなかった場合には空文字を返す
   def eval(str)
     head = str.split(' ', 2).first
-    @messageOriginal = parren_killer(head)
+    @messageOriginal = @diceBot.parren_killer(head)
     @message = @messageOriginal.upcase
 
     output = @diceBot.eval(@message)
@@ -89,57 +89,6 @@ class BCDiceCore
 
   def getRandResults
     @randomizer.rand_results
-  end
-
-  ####################         テキスト前処理        ########################
-  def parren_killer(string)
-    debug("parren_killer input", string)
-
-    string = changeRangeTextToNumberText(string)
-
-    round_type = @diceBot.fractionType.to_sym
-    string = string.gsub(%r{\([\d/\+\*\-\(\)]+\)}) do |expr|
-      ArithmeticEvaluator.new.eval(expr, round_type)
-    end
-
-    debug("diceBot.changeText(string) begin", string)
-    string = @diceBot.changeText(string)
-    debug("diceBot.changeText(string) end", string)
-
-    string = string.gsub(/([\d]+[dD])([^\w]|$)/) { "#{Regexp.last_match(1)}6#{Regexp.last_match(2)}" }
-
-    debug("parren_killer output", string)
-
-    return string
-  end
-
-  # [1...4]D[2...7] -> 2D7 のように[n...m]をランダムな数値へ変換
-  def changeRangeTextToNumberText(string)
-    debug('[st...ed] before string', string)
-
-    while /^(.*?)\[(\d+)[.]{3}(\d+)\](.*)/ =~ string
-      beforeText = Regexp.last_match(1)
-      beforeText ||= ""
-
-      rangeBegin = Regexp.last_match(2).to_i
-      rangeEnd = Regexp.last_match(3).to_i
-
-      afterText = Regexp.last_match(4)
-      afterText ||= ""
-
-      next unless rangeBegin < rangeEnd
-
-      range = (rangeEnd - rangeBegin + 1)
-      debug('range', range)
-
-      rolledNumber, = @diceBot.roll(1, range)
-      resultNumber = rangeBegin - 1 + rolledNumber
-      string = "#{beforeText}#{resultNumber}#{afterText}"
-    end
-
-    debug('[st...ed] after string', string)
-
-    return string
   end
 
   # 指定したタイトルのゲームを設定する

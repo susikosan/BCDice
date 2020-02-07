@@ -511,13 +511,25 @@ class DiceBot
       end
 
     text = text.gsub("\\n", "\n")
-    text = @@bcdice.rollTableMessageDiceText(text)
+    text = rollTableMessageDiceText(text)
 
     return nil if text.nil?
 
     return "#{name}(#{number}[#{diceText}]) ＞ #{text}" if isPrintDiceText && !diceText.nil?
 
     return "#{name}(#{number}) ＞ #{text}"
+  end
+
+  def rollTableMessageDiceText(text)
+    message = text.gsub(/(\d+)D(\d+)/) do
+      m = $~
+      diceCount = m[1]
+      diceMax = m[2]
+      value, = roll(diceCount, diceMax)
+      "#{diceCount}D#{diceMax}(=>#{value})"
+    end
+
+    return message
   end
 
   def getTableInfoFromExtraTableText(text, count = nil)

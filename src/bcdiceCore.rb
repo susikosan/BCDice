@@ -92,22 +92,6 @@ class BCDiceCore
     @message = @messageOriginal
   end
 
-  ###########################################################################
-  # **                         各種コマンド処理
-  ###########################################################################
-
-  def rollTableMessageDiceText(text)
-    message = text.gsub(/(\d+)D(\d+)/) do
-      m = $~
-      diceCount = m[1]
-      diceMax = m[2]
-      value, = roll(diceCount, diceMax)
-      "#{diceCount}D#{diceMax}(=>#{value})"
-    end
-
-    return message
-  end
-
   #=========================================================================
   # **                           ランダマイザ
   #=========================================================================

@@ -87,11 +87,6 @@ class BCDiceCore
     @messageOriginal
   end
 
-  # 直接TALKでは大文字小文字を考慮したいのでここでオリジナルの文字列に変更
-  def changeMessageOriginal
-    @message = @messageOriginal
-  end
-
   #=========================================================================
   # **                           ランダマイザ
   #=========================================================================
@@ -188,18 +183,6 @@ class BCDiceCore
     return dice_str.sub(/\[[\d,]+\]/, '').to_i
   end
 
-  def check_nDx(total_n, _dice_n, signOfInequality, diff, _dice_cnt, _dice_max, _n1, _n_max) # ゲーム別成功度判定(ダイスごちゃ混ぜ系)
-    debug('check_nDx begin diff', diff)
-    success = @diceBot.check_hit(total_n, signOfInequality, diff)
-    debug('check_nDx success', success)
-
-    if success >= 1
-      return " ＞ 成功"
-    end
-
-    return " ＞ 失敗"
-  end
-
   ####################         テキスト前処理        ########################
   def parren_killer(string)
     debug("parren_killer input", string)
@@ -220,10 +203,6 @@ class BCDiceCore
     debug("parren_killer output", string)
 
     return string
-  end
-
-  def rollDiceAddingUp(string, isCheckSuccess = false)
-    @diceBot.rollDiceAddingUp(string, isCheckSuccess)
   end
 
   # [1...4]D[2...7] -> 2D7 のように[n...m]をランダムな数値へ変換

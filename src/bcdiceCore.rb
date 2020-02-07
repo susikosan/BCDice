@@ -87,100 +87,8 @@ class BCDiceCore
     @messageOriginal
   end
 
-  #=========================================================================
-  # **                           ランダマイザ
-  #=========================================================================
-  # ダイスロール
-  def roll(dice_cnt, dice_max, dice_sort = 0, dice_add = 0, dice_ul = '', dice_diff = 0, dice_re = nil)
-    dice_cnt = dice_cnt.to_i
-    dice_max = dice_max.to_i
-    dice_re = dice_re.to_i
-
-    total = 0
-    dice_str = ""
-    numberSpot1 = 0
-    cnt_max = 0
-    n_max = 0
-    cnt_suc = 0
-    d9_on = false
-    rerollCount = 0
-    dice_result = []
-
-    # dice_add = 0 if( ! dice_add )
-
-    if (@diceBot.d66Type != 0) && (dice_max == 66)
-      dice_sort = 0
-      dice_cnt = 2
-      dice_max = 6
-    end
-
-    if @diceBot.isD9 && (dice_max == 9)
-      d9_on = true
-      dice_max += 1
-    end
-
-    unless (dice_cnt <= $DICE_MAXCNT) && (dice_max <= $DICE_MAXNUM)
-      return total, dice_str, numberSpot1, cnt_max, n_max, cnt_suc, rerollCount
-    end
-
-    dice_cnt.times do |i|
-      i += 1
-      dice_now = 0
-      dice_n = 0
-      dice_st_n = ""
-      round = 0
-
-      loop do
-        dice_n = @randomizer.rand(dice_max)
-        dice_n -= 1 if d9_on
-
-        dice_now += dice_n
-
-        dice_st_n += "," unless dice_st_n.empty?
-        dice_st_n += dice_n.to_s
-        round += 1
-
-        break unless (dice_add > 1) && (dice_n >= dice_add)
-      end
-
-      total += dice_now
-
-      if dice_ul != ''
-        suc = @diceBot.check_hit(dice_now, dice_ul, dice_diff)
-        cnt_suc += suc
-      end
-
-      if dice_re
-        rerollCount += 1 if dice_now >= dice_re
-      end
-
-      if round >= 2
-        dice_result.push("#{dice_now}[#{dice_st_n}]")
-      else
-        dice_result.push(dice_now)
-      end
-
-      numberSpot1 += 1 if dice_now == 1
-      cnt_max += 1 if  dice_now == dice_max
-      n_max = dice_now if dice_now > n_max
-    end
-
-    if dice_sort != 0
-      dice_str = dice_result.sort_by { |a| dice_num(a) }.join(",")
-    else
-      dice_str = dice_result.join(",")
-    end
-
-    return total, dice_str, numberSpot1, cnt_max, n_max, cnt_suc, rerollCount
-  end
-
   def getRandResults
     @randomizer.rand_results
-  end
-
-  def dice_num(dice_str)
-    dice_str = dice_str.to_s
-    return dice_str.sub(/\[[\d,]+\]/, '').to_i
   end
 
   ####################         テキスト前処理        ########################
@@ -224,7 +132,7 @@ class BCDiceCore
       range = (rangeEnd - rangeBegin + 1)
       debug('range', range)
 
-      rolledNumber, = roll(1, range)
+      rolledNumber, = @diceBot.roll(1, range)
       resultNumber = rangeBegin - 1 + rolledNumber
       string = "#{beforeText}#{resultNumber}#{afterText}"
     end

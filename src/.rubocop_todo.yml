@@ -275,6 +275,7 @@ Style/GlobalVars:
     - dice/AddDice.rb
     - dice/UpperDice.rb
     - dice/RerollDice.rb
+    - diceBot/DiceBot.rb
     - diceBot/RecordOfSteam.rb
     - diceBot/TokumeiTenkousei.rb
     - diceBot/BattleTech.rb

@@ -2,13 +2,8 @@
 
 require 'diceBot/NightWizard'
 
-class SevenFortressMobius < DiceBot
+class SevenFortressMobius < NightWizard
   setPrefixes(['\d*SFM'])
-
-  def initialize
-    super
-    @nightWizardDiceBot = NightWizard.new
-  end
 
   def gameName
     'セブン＝フォートレス メビウス'
@@ -30,11 +25,6 @@ INFO_MESSAGE_TEXT
 
   def changeText(string)
     string = string.sub(/(\d*)SFM/i) { "#{Regexp.last_match(1)}NW" }
-
-    string = @nightWizardDiceBot.changeText(string)
-  end
-
-  def dice_command_xRn(string, nick_e)
-    return @nightWizardDiceBot.checkRoll(string, nick_e)
+    super(string)
   end
 end

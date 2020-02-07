@@ -19,22 +19,22 @@ class Table
   end
 
   # 表を振る
-  # @param [BCDiceCore] bcdice
+  # @param [Randomizer] randomizer
   # @return [String | nil] 結果
-  def roll(bcdice)
+  def roll(randomizer)
     case @type
     when :d
-      roll_d(bcdice)
+      roll_d(randomizer)
     end
   end
 
   private
 
   # 加算ダイスで表を振る
-  # @param [BCDiceCore] bcdice
+  # @param [Randomizer] randomizer
   # @return [String] 結果
-  def roll_d(bcdice)
-    value, = bcdice.roll(@times, @sides)
+  def roll_d(randomizer)
+    value, = randomizer.roll(@times, @sides)
     index = value - @times
 
     return "#{@name}(#{value}) ＞ #{@table[index]}"

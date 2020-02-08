@@ -55,11 +55,7 @@ class BCDiceCore
   # @param [String] str
   # @param [String] 結果。評価できなかった場合には空文字を返す
   def eval(str)
-    head = str.split(' ', 2).first
-    @messageOriginal = @diceBot.parren_killer(head)
-    @message = @messageOriginal.upcase
-
-    output = @diceBot.eval(@message)
+    output = @diceBot.eval(str)
     if output.nil?
       return ""
     end
@@ -79,12 +75,7 @@ class BCDiceCore
     return if  diceBot.nil?
 
     @diceBot = diceBot
-    @diceBot.bcdice = self
     diceBot.randomizer = @randomizer
-  end
-
-  def getOriginalMessage
-    @messageOriginal
   end
 
   def getRandResults

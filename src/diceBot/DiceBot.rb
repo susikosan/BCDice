@@ -66,8 +66,6 @@ class DiceBot
 
   clearPrefixes
 
-  @@bcdice = nil
-
   @@DEFAULT_SEND_MODE = 2 # デフォルトの送信形式(0=結果のみ,1=0+式,2=1+ダイス個別)
 
   attr_writer :randomizer
@@ -103,14 +101,20 @@ class DiceBot
   attr_reader :isPrintMaxDice, :upplerRollThreshold
   attr_reader :defaultSuccessTarget, :rerollNumber, :fractionType
 
-  # @param [String] command
+  # @param [String] text
   # @return [String]
   # @return [nil]
-  def eval(command)
-    text, secret = dice_command(command, "")
-    if text != "1"
+  def eval(text)
+    @full_text = text
+    @original_command = @full_text.split(' ', 2).first
+    @preprocessed_command = parren_killer(@original_command)
+    command = @preprocessed_command.upcase
+
+    input = isGetOriginalMessage ? @preprocessed_command : command
+    ret, secret = dice_command(input, "")
+    if ret != "1"
       @secret = secret
-      return text
+      return ret
     end
 
     ret = eval_choice(command) ||
@@ -164,14 +168,6 @@ class DiceBot
   end
 
   attr_writer :upplerRollThreshold
-
-  def bcdice=(b)
-    @@bcdice = b
-  end
-
-  def bcdice
-    @@bcdice
-  end
 
   def rand(max)
     @randomizer.roll(1, max) - 1
@@ -331,8 +327,6 @@ class DiceBot
   end
 
   def dice_command(string, nick_e)
-    string = @@bcdice.getOriginalMessage if isGetOriginalMessage
-
     debug('dice_command Begin string', string)
     secret_flg = false
 

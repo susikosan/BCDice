@@ -109,13 +109,9 @@ class DiceBot
     command = @preprocessed_command.upcase
 
     input = isGetOriginalMessage ? @preprocessed_command : command
-    ret, secret = dice_command(input)
-    if ret != "1"
-      @secret = secret
-      return ret
-    end
 
-    ret = eval_choice(command) ||
+    ret = dice_command(input) ||
+          eval_choice(command) ||
           eval_calc(command) ||
           eval_add_dice(command) ||
           eval_barabara_dice(command) ||
@@ -313,32 +309,23 @@ class DiceBot
   end
 
   def dice_command(string)
-    debug('dice_command Begin string', string)
-    secret_flg = false
-
-    unless self.class.prefixesPattern =~ string
-      debug('not match in prefixes')
-      return '1', secret_flg
+    m = self.class.prefixesPattern.match(string)
+    unless m
+      return nil
     end
 
-    secretMarker = Regexp.last_match(2)
-    command = Regexp.last_match(3)
+    secret = !m[2].nil?
+    command = m[3]
 
-    debug("dicebot after command", command)
+    output_msg, secret_flg = rollDiceCommand(command)
+    if output_msg.nil? || output_msg.empty? || output_msg == '1'
+      return nil
+    end
 
-    debug('match')
-
-    output_msg, secret_flg = rollDiceCommandCatched(command)
-    output_msg = '1' if output_msg.nil? || output_msg.empty?
     secret_flg ||= false
+    @secret = secret || secret_flg
 
-    output_msg = ": #{output_msg}" if output_msg != '1'
-
-    if secretMarker # 隠しロール
-      secret_flg = true if output_msg != '1'
-    end
-
-    return output_msg, secret_flg
+    return ": #{output_msg}"
   end
 
   # 通常ダイスボットのコマンド文字列は全て大文字に強制されるが、
@@ -347,16 +334,7 @@ class DiceBot
     false
   end
 
-  def rollDiceCommandCatched(command)
-    result = nil
-    debug('call rollDiceCommand command', command)
-    result, secret_flg = rollDiceCommand(command)
-
-    debug('rollDiceCommand result', result)
-
-    return result, secret_flg
-  end
-
+  # 各システムがこのメソッドをオーバーライドする
   def rollDiceCommand(_command)
     nil
   end

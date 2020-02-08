@@ -97,7 +97,6 @@ class BCDiceCore
       end
 
     setDiceBot(diceBot)
-    diceBot.postSet
 
     message = "Game設定を#{diceBot.gameName}に設定しました"
     debug('setGameByTitle message', message)

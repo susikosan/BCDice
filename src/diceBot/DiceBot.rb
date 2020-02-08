@@ -66,8 +66,6 @@ class DiceBot
 
   clearPrefixes
 
-  @@DEFAULT_SEND_MODE = 2 # デフォルトの送信形式(0=結果のみ,1=0+式,2=1+ダイス個別)
-
   attr_writer :randomizer
 
   def initialize(randomizer: Randomizer.new)
@@ -125,14 +123,6 @@ class DiceBot
           eval_upper_dice(command) ||
           eval_d66_dice(command)
     return ret
-  end
-
-  # ダイスボット設定後に行う処理
-  # @return [void]
-  #
-  # 既定では何もしない。
-  def postSet
-    # 何もしない
   end
 
   def info
@@ -258,10 +248,6 @@ class DiceBot
 
   attr_reader :sortType
 
-  def setSortType(s)
-    @sortType = s
-  end
-
   def d66(*args)
     getD66Value(*args)
   end
@@ -338,7 +324,6 @@ class DiceBot
     secretMarker = Regexp.last_match(2)
     command = Regexp.last_match(3)
 
-    command = removeDiceCommandMessage(command)
     debug("dicebot after command", command)
 
     debug('match')
@@ -360,11 +345,6 @@ class DiceBot
   # これを嫌う場合にはこのメソッドを true を返すようにオーバーライドすること。
   def isGetOriginalMessage
     false
-  end
-
-  def removeDiceCommandMessage(command)
-    # "2d6 Attack" のAttackのようなメッセージ部分をここで除去
-    command.sub(/[\s　].+/, '')
   end
 
   def rollDiceCommandCatched(command)

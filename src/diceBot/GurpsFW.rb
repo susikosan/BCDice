@@ -76,7 +76,7 @@ class GurpsFW < DiceBot
 INFO_MESSAGE_TEXT
   end
 
-  def dice_command(string, name)
+  def dice_command(string)
     secret_flg = false
 
     return '1', secret_flg unless self.class.prefixesPattern =~ string
@@ -84,7 +84,7 @@ INFO_MESSAGE_TEXT
     secretMarker = Regexp.last_match(2)
     command = Regexp.last_match(3).upcase
 
-    output_msg = getCommandResult(command, name)
+    output_msg = getCommandResult(command)
 
     if secretMarker # 隠しロール
       secret_flg = true if output_msg != '1'
@@ -131,7 +131,7 @@ INFO_MESSAGE_TEXT
     return ''
   end
 
-  def getCommandResult(string, nick_e)
+  def getCommandResult(string)
     tableName = ""
     result = ""
     number = 0
@@ -631,13 +631,13 @@ PCは全員「好色」「平和愛好/専守防衛」の特徴を得る。「�
         tableName = "ナンバーワンノーマルくじ"
       end
       result = getLotResult(type)
-      return "#{nick_e}: #{tableName}：#{result}"
+      return ": #{tableName}：#{result}"
 
     else
       return ""
     end
 
-    text = "#{nick_e}: #{tableName}(#{number})：#{result}"
+    text = ": #{tableName}(#{number})：#{result}"
 
     return text
   end

@@ -109,7 +109,7 @@ class DiceBot
     command = @preprocessed_command.upcase
 
     input = isGetOriginalMessage ? @preprocessed_command : command
-    ret, secret = dice_command(input, "")
+    ret, secret = dice_command(input)
     if ret != "1"
       @secret = secret
       return ret
@@ -312,7 +312,7 @@ class DiceBot
     string
   end
 
-  def dice_command(string, nick_e)
+  def dice_command(string)
     debug('dice_command Begin string', string)
     secret_flg = false
 
@@ -332,7 +332,7 @@ class DiceBot
     output_msg = '1' if output_msg.nil? || output_msg.empty?
     secret_flg ||= false
 
-    output_msg = "#{nick_e}: #{output_msg}" if output_msg != '1'
+    output_msg = ": #{output_msg}" if output_msg != '1'
 
     if secretMarker # 隠しロール
       secret_flg = true if output_msg != '1'

@@ -429,7 +429,7 @@ INFO_MESSAGE_TEXT
     baseParts += "  アクセサリ部品："
 
     counts.times do |_i|
-      number2 = d66(2)
+      number2 = getD66Value(2)
       baseParts += get_table_by_number(number2, armsTable)
       partsEffect += get_table_by_number(number2, armsEffectTable)
 

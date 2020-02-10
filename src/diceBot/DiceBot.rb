@@ -211,7 +211,7 @@ class DiceBot
       total += dice_now
 
       if dice_ul != ''
-        suc = check_hit(dice_now, dice_ul, dice_diff)
+        suc = compare(dice_now, dice_ul, dice_diff)
         cnt_suc += suc
       end
 
@@ -305,45 +305,18 @@ class DiceBot
     @diffText = diffText
   end
 
-  def check_hit(dice_now, signOfInequality, diff) # 成功数判定用
-    suc = 0
-
-    if  diff.is_a?(String)
-      unless /\d/ =~ diff
-        return suc
-      end
-
-      diff = diff.to_i
+  # valueとtargetをoperatorで比較する
+  # @param [Integer] value
+  # @param [String] operator
+  # @param [Integer] target
+  # @return [Integer] 比較の結果がtrueなら1、偽なら0を返す
+  def compare(value, operator, target)
+    operator = normalize_operator(operator)
+    if operator.nil?
+      return 0
     end
 
-    case signOfInequality
-    when /(<=|=<)/
-      if dice_now <= diff
-        suc += 1
-      end
-    when /(>=|=>)/
-      if dice_now >= diff
-        suc += 1
-      end
-    when /(<>)/
-      if dice_now != diff
-        suc += 1
-      end
-    when /[<]+/
-      if dice_now < diff
-        suc += 1
-      end
-    when /[>]+/
-      if dice_now > diff
-        suc += 1
-      end
-    when /[=]+/
-      if dice_now == diff
-        suc += 1
-      end
-    end
-
-    return suc
+    return value.send(operator, target) ? 1 : 0
   end
 
   def dice_command_xRn(_string, _nick_e)

@@ -188,7 +188,6 @@ INFO_MESSAGE_TEXT
 
     total_n = dice_now + bonus
     dice_str = "[#{dice_str}]"
-    setDiceText(dice_str)
 
     output = "#{dice_now}#{dice_str}"
     if bonus > 0

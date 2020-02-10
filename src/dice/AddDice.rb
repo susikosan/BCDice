@@ -70,7 +70,6 @@ module AddDice
       string += "#{signOfInequality}#{diffText}"
     end
 
-    setDiceText(output)
     setDiffText(diffText)
 
     # ダイス目による補正処理（現状ナイトメアハンターディープ専用）

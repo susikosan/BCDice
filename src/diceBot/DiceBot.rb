@@ -301,11 +301,6 @@ class DiceBot
     nil
   end
 
-  def setDiceText(diceText)
-    debug("setDiceText diceText", diceText)
-    @diceText = diceText
-  end
-
   def setDiffText(diffText)
     @diffText = diffText
   end

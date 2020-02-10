@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
+require 'bcdice'
 require 'bcdiceCore'
 require 'diceBot/DiceBotLoader'
-require 'cgiDiceBot'
 require 'DiceBotTestData'
+
+$SEND_STR_MAX = 99999
 
 class DiceBotTest
   def initialize(testDataPath = nil, dataIndex = nil)
@@ -14,8 +16,6 @@ class DiceBotTest
 
     @dataDir = "#{testBaseDir}/data"
     @tableDir = "#{testBaseDir}/../../extratables"
-
-    @bot = CgiDiceBot.new
 
     @testDataSet = []
     @errorLog = []
@@ -135,12 +135,24 @@ class DiceBotTest
   # ダイスコマンドを実行する
   def executeCommand(testData)
     rands = testData.rands
-    @bot.setRandomValues(rands)
-    @bot.setTest
+    sys = BCDice.get_system_by_id(testData.gameType) || DiceBot
 
-    result = ''
-    testData.input.each do |message|
-      result += @bot.roll(message, testData.gameType).first
+    dicebot = sys.new
+    dicebot.randomizer = StaticRands.new(rands)
+
+    result = dicebot.eval(testData.input)
+
+    # 多言語対応のダイスボットは「GameType:Language」という書式なので、
+    # ここで言語名を削って表示する。（内部的には必要だが、表示では不要のため）
+    gameType = dicebot.gameType.gsub(/:.+$/, '')
+    if result
+      result = "#{gameType} #{result}"
+    else
+      result = ""
+    end
+
+    if dicebot.secret?
+      result += "###secret dice###"
     end
 
     unless rands.empty?

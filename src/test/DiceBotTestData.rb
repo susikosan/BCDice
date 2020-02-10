@@ -6,7 +6,7 @@ class DiceBotTestData
   attr_reader :gameType
   # テスト番号
   attr_accessor :index
-  # 入力コマンド文字列の配列
+  # 入力コマンド文字列
   attr_reader :input
   # 期待される出力文字列
   attr_reader :output
@@ -15,7 +15,7 @@ class DiceBotTestData
     matches = source.match(/input:\n(.+)\noutput:(.*)\nrand:(.*)/m)
     raise "invalid data: #{source.inspect}" unless matches
 
-    input = matches[1].lines.map(&:chomp)
+    input = matches[1].lstrip
     output = matches[2].lstrip
 
     rands = matches[3].split(',').map do |randStr|

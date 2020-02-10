@@ -116,7 +116,7 @@ MESSAGETEXT
       return dice, diceText
     end
 
-    diceList = getDiceListFromDiceText(diceText)
+    diceList = @randomizer.rand_values[-diceCount, diceCount]
     diceList.sort!
     diceList.reverse!
 

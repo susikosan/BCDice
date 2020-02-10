@@ -326,7 +326,7 @@ INFO_MESSAGE_TEXT
 
   # 魔素獲得チェック
   def getGainMagicElementText()
-    diceList = getDiceList
+    diceList = @randomizer.rand_values
     debug("getGainMagicElementText diceList", diceList)
 
     return '' if diceList.empty?

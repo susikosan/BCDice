@@ -37,7 +37,7 @@ MESSAGETEXT
 
   def check_2D6(totalValue, dice_n, signOfInequality, diff, _dice_cnt, _dice_max, _n1, _n_max) # ゲーム別成功度判定(2D6)
     if dice_n == 10
-      diceList = getDiceList()
+      diceList = @randomizer.rand_values
       if diceList[0] == 5
         # 2d6の合計が10で片方5ならもう片方も5であろうという手抜き判定
         return " ＞ ゴリティカル（自動的成功）"

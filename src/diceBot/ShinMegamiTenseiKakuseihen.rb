@@ -46,7 +46,7 @@ INFO_MESSAGE_TEXT
   end
 
   def getTwoDice
-    value = getDiceList.first
+    value = @randomizer.rand_values.first
     value ||= 0
 
     value %= 100

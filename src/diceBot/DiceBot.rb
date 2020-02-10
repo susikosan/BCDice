@@ -512,29 +512,6 @@ class DiceBot
     loop_count < @rerollLimitCount || @rerollLimitCount == 0
   end
 
-  def getDiceList
-    getDiceListFromDiceText(@diceText)
-  end
-
-  def getDiceListFromDiceText(diceText)
-    debug("getDiceList diceText", diceText)
-
-    diceList = []
-
-    if /\[([\d,]+)\]/ =~ diceText
-      diceText = Regexp.last_match(1)
-    end
-
-    return diceList unless /([\d,]+)/ =~ diceText
-
-    diceString = Regexp.last_match(1)
-    diceList = diceString.split(/,/).collect { |i| i.to_i }
-
-    debug("diceList", diceList)
-
-    return diceList
-  end
-
   # ** 汎用表サブルーチン
   def get_table_by_number(index, table, default = '1')
     table.each do |item|

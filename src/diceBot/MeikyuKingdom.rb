@@ -109,7 +109,7 @@ INFO_MESSAGE_TEXT
   def getKiryokuResult(total_n, _dice_n, _signOfInequality, diff)
     output_msg = ""
 
-    diceList = getDiceList
+    diceList = @randomizer.rand_values
     debug("getKiryokuResult diceList", diceList)
 
     dice6List = diceList.find_all { |i| i == 6 }

@@ -37,7 +37,7 @@ INFO_MESSAGE_TEXT
   end
 
   def getJuuten
-    diceList = getDiceList
+    diceList = @randomizer.rand_values
     return '' if diceList.length != 2
 
     juuten = 0

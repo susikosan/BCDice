@@ -149,10 +149,6 @@ class DiceBot
 
   attr_reader :gameType
 
-  def setGameType(type)
-    @gameType = type
-  end
-
   attr_writer :upplerRollThreshold
 
   def rand(max)

@@ -6,54 +6,46 @@ module BarabaraDice
   # @param [String] command
   # @return [String | nil]
   def eval_barabara_dice(command)
-    string = command
-    suc = 0
-    signOfInequality = ""
-    diff = 0
-    output = ""
-
-    string = string.gsub(/-[\d]+B[\d]+/, '') # バラバラダイスを引き算しようとしているのを除去
-
-    unless /^(S)?(([\d]+B[\d]+(\+[\d]+B[\d]+)*)(([<>=]+)([\d]+))?)$/ =~ string
+    m = /^(S)?((\d+B\d+(\+\d+B\d+)*)([<>=]+\d+)?)$/.match(command)
+    unless m
       return nil
     end
 
-    @secret = !Regexp.last_match(1).nil?
+    @secret = !m[1].nil?
+    lhs = m[3]
+    operator, target = parse_operator_and_target(m[5] || defaultSuccessTarget)
 
-    string = Regexp.last_match(2)
-    if Regexp.last_match(5)
-      diff = Regexp.last_match(7).to_i
-      string = Regexp.last_match(3)
-      signOfInequality = marshalSignOfInequality(Regexp.last_match(6))
-    elsif  /([<>=]+)(\d+)/ =~ defaultSuccessTarget
-      diff = Regexp.last_match(2).to_i
-      signOfInequality = marshalSignOfInequality(Regexp.last_match(1))
+    values = []
+    lhs.split("+").each do |dice_literal|
+      times, sides = dice_literal.split("B", 2).map(&:to_i)
+      values += @randomizer.roll_barabara(times, sides)
     end
 
-    dice_a = string.split(/\+/)
-    dice_cnt_total = 0
-    numberSpot1 = 0
-
-    dice_a.each do |dice_o|
-      dice_cnt, dice_max, = dice_o.split(/[bB]/)
-      dice_cnt = dice_cnt.to_i
-      dice_max = dice_max.to_i
-
-      dice_dat = roll(dice_cnt, dice_max, (sortType & 2), 0, signOfInequality, diff)
-      suc += dice_dat[5]
-      output += "," if output != ""
-      output += dice_dat[1]
-      numberSpot1 += dice_dat[2]
-      dice_cnt_total += dice_cnt
+    if @sortType >= 2
+      values.sort!
     end
 
-    if signOfInequality != ""
-      string += "#{signOfInequality}#{diff}"
-      output = "#{output} ＞ 成功数#{suc}"
-      output += getGrichText(numberSpot1, dice_cnt_total, suc)
-    end
-    output = ": (#{string}) ＞ #{output}"
+    output = values.join(",")
 
-    return output
+    if operator
+      num_successes = values.count { |val| val.send(operator, target) }
+      output = "#{output} ＞ 成功数#{num_successes}"
+      output += getGrichText(values.count(1), values.length, num_successes)
+    end
+
+    return ": (#{lhs}#{operator_to_s(operator)}#{target}) ＞ #{output}"
+  end
+
+  # @param [String | nil] str
+  # @return [Array<(Integer, Integer)> || Array<(nil, nil)>]
+  def parse_operator_and_target(str)
+    m = /^([<>=]+)(\d+)/.match(str)
+    unless m
+      return nil, nil
+    end
+
+    operator = normalize_operator(m[1])
+    target = m[2].to_i
+    return operator, target
   end
 end

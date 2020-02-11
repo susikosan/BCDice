@@ -42,10 +42,8 @@ class DiceBotTest
 
       true
     else
-      errorLog = $RUBY18_WIN ? @errorLog.map(&:tosjis) : @errorLog
-
       puts('[Failures]')
-      puts(errorLog.join("\n===========================\n"))
+      puts(@errorLog.join("\n===========================\n"))
 
       false
     end

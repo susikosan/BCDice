@@ -98,13 +98,12 @@ MESSAGETEXT
   FAILURE_STR = ' ＞ 失敗'.freeze
 
   def derive_achievement(num_dices, command)
-    # rollメソッドの引数は、順に「ダイス数」「ダイス1個の出目最大値」「結果のソート」「出目振り足しの基準値（0や1にしておけば処理は行われない）」「成功数を数えるときの比較条件」「成功数の基準値」「振り直しをする出目の基準値」
-    # 戻り値は、順に「合計した出目」「ロール結果出力用文字列」「出目が1だったダイスの数」「出目が最大値だったダイスの数」「出目の最大値」「成功数」「振り直しすべきダイスの数」
     # 達成数計算の際にはトライアンフ「出目が6だったダイスは達成数2としてカウントする」を考慮する必要があるが、要は「達成数=成功数+出目が最大値だったダイスの数」になる
-    roll_results = roll(num_dices, D6, @sortType, 0, '>=', LEAST_SUCCESS_ROLL)
-    dice_str = roll_results[1]
-    num_triumph_dices = roll_results[3]
-    num_successes = roll_results[5]
+    values = @randomizer.roll_barabara(num_dices, D6)
+
+    dice_str = values.join(",")
+    num_triumph_dices = values.count(6)
+    num_successes = values.count { |val| val >= LEAST_SUCCESS_ROLL }
     achievement = num_successes + num_triumph_dices
 
     output = "(#{command}) ＞ [#{dice_str}] ＞ 達成数: #{achievement}"

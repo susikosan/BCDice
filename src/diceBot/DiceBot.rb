@@ -156,7 +156,7 @@ class DiceBot
     @randomizer.roll(1, max) - 1
   end
 
-  def roll(dice_cnt, dice_max, dice_sort = 0, dice_add = 0, dice_ul = '', dice_diff = 0)
+  def roll(dice_cnt, dice_max, dice_sort = 0, dice_add = 0)
     dice_cnt = dice_cnt.to_i
     dice_max = dice_max.to_i
 
@@ -165,7 +165,6 @@ class DiceBot
     numberSpot1 = 0
     cnt_max = 0
     n_max = 0
-    cnt_suc = 0
     d9_on = false
     dice_result = []
 
@@ -183,7 +182,7 @@ class DiceBot
     end
 
     unless (dice_cnt <= $DICE_MAXCNT) && (dice_max <= $DICE_MAXNUM)
-      return total, dice_str, numberSpot1, cnt_max, n_max, cnt_suc, rerollCount
+      return total, dice_str, numberSpot1, cnt_max, n_max
     end
 
     dice_cnt.times do |i|
@@ -208,11 +207,6 @@ class DiceBot
 
       total += dice_now
 
-      if dice_ul != ''
-        suc = compare(dice_now, dice_ul, dice_diff)
-        cnt_suc += suc
-      end
-
       if round >= 2
         dice_result.push("#{dice_now}[#{dice_st_n}]")
       else
@@ -230,7 +224,7 @@ class DiceBot
       dice_str = dice_result.join(",")
     end
 
-    return total, dice_str, numberSpot1, cnt_max, n_max, cnt_suc
+    return total, dice_str, numberSpot1, cnt_max, n_max
   end
 
   attr_reader :sortType

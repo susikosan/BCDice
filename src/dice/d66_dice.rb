@@ -1,6 +1,6 @@
 module D66Dice
   def eval_d66_dice(string)
-    if d66Type == 0
+    if @d66Type == 0
       return nil
     end
 
@@ -67,7 +67,7 @@ module D66Dice
   end
 
   def getD66Value(mode = nil)
-    mode ||= d66Type
+    mode ||= @d66Type
 
     isSwap = (mode > 1)
     rollD66(isSwap)

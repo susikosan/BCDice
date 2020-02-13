@@ -13,7 +13,7 @@ module BarabaraDice
 
     @secret = !m[1].nil?
     lhs = m[3]
-    operator, target = parse_operator_and_target(m[5] || defaultSuccessTarget)
+    operator, target = parse_operator_and_target(m[5] || @defaultSuccessTarget)
 
     values = []
     lhs.split("+").each do |dice_literal|

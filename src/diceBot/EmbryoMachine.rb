@@ -79,7 +79,7 @@ INFO_MESSAGE_TEXT
     fumble = Regexp.last_match(8).to_i if Regexp.last_match(8)
     mod = parren_killer("(0#{modText})").to_i if modText
 
-    dice_now, dice_str, = roll(2, 10, (sortType & 1))
+    dice_now, dice_str, = roll(2, 10, (@sortType & 1))
     dice_loc, = roll(2, 10)
     dice_arr = dice_str.split(/,/).collect { |i| i.to_i }
     big_dice = dice_arr[1]

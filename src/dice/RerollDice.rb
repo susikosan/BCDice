@@ -66,7 +66,7 @@ module RerollDice
                       dice_list.count { |val| val >= rerollNumber }
                     end
 
-      if sortType & 2 != 0
+      if @sortType & 2 != 0
         dice_list = dice_list.sort()
       end
       text = dice_list.join(",")
@@ -105,7 +105,7 @@ module RerollDice
     if operator && conditionValue
       operator = marshalSignOfInequality(operator)
       conditionValue = conditionValue.to_i
-    elsif (m = /([<>=]+)(\d+)/.match(defaultSuccessTarget))
+    elsif (m = /([<>=]+)(\d+)/.match(@defaultSuccessTarget))
       operator = marshalSignOfInequality(m[1])
       conditionValue = m[2].to_i
     end
@@ -118,8 +118,8 @@ module RerollDice
       braceThreshold.to_i
     elsif atmarkThreshold
       atmarkThreshold.to_i
-    elsif rerollNumber != 0
-      rerollNumber
+    elsif @rerollNumber != 0
+      @rerollNumber
     elsif conditionValue
       conditionValue.to_i
     else

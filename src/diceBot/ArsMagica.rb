@@ -100,7 +100,7 @@ INFO_MESSAGE_TEXT
         dice_n.push(botch_die)
       end
 
-      dice_n = dice_n.sort if sortType != 0
+      dice_n = dice_n.sort if @sortType != 0
 
       output += "0[#{die},#{dice_n.join(',')}]"
 

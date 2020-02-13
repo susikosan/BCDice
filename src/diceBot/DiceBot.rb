@@ -67,6 +67,7 @@ class DiceBot
   clearPrefixes
 
   attr_writer :randomizer
+  attr_reader :gameType
 
   def initialize(randomizer: Randomizer.new)
     @sortType = 0 # ソート設定(1 = 足し算ダイスでソート有, 2 = バラバラロール（Bコマンド）でソート有, 3 = １と２両方ソート有）
@@ -91,12 +92,6 @@ class DiceBot
       self.class.setPrefixes(prefixs)
     end
   end
-
-  attr_accessor :rerollLimitCount
-
-  attr_reader :sameDiceRerollCount, :sameDiceRerollType, :d66Type
-  attr_reader :upplerRollThreshold
-  attr_reader :defaultSuccessTarget, :rerollNumber, :fractionType
 
   # @param [String] text
   # @return [String]
@@ -146,10 +141,6 @@ class DiceBot
   # @deprecated 代わりに {#prefixes} を使ってください
   alias prefixs prefixes
 
-  attr_reader :gameType
-
-  attr_writer :upplerRollThreshold
-
   # @param [Integer] max
   # @return [Integer] 0以上max未満の整数
   def rand(max)
@@ -162,7 +153,7 @@ class DiceBot
 
     d9_on = false
 
-    if (d66Type != 0) && (dice_max == 66)
+    if (@d66Type != 0) && (dice_max == 66)
       dice_sort = 0
       dice_cnt = 2
       dice_max = 6
@@ -194,8 +185,6 @@ class DiceBot
     return total, dice_str, numberSpot1, cnt_max, n_max
   end
 
-  attr_reader :sortType
-
   def getHelpMessage
     ''
   end
@@ -204,7 +193,7 @@ class DiceBot
   def parren_killer(string)
     debug("parren_killer input", string)
 
-    round_type = fractionType.to_sym
+    round_type = @fractionType.to_sym
     string = string.gsub(%r{\([\d/\+\*\-\(\)]+\)}) do |expr|
       ArithmeticEvaluator.new.eval(expr, round_type)
     end

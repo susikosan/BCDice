@@ -195,7 +195,7 @@ INFO_MESSAGE_TEXT
     dice_tc = dice_c - dicesubs.size
 
     if dice_tc > 0
-      _, dice_str, = roll(dice_tc, 6, (sortType & 1)) # ダイス数修正、並べ替えせずに出力
+      _, dice_str, = roll(dice_tc, 6, (@sortType & 1)) # ダイス数修正、並べ替えせずに出力
       dice_num = (dice_str.split(/,/) + dicesubs).collect { |n| n.to_i }	# 差し換え指定のダイスを挿入
     elsif dicesubs.empty?
       return "ERROR:振るダイスの数が0個です"

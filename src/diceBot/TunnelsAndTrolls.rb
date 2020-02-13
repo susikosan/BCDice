@@ -162,7 +162,7 @@ INFO_MESSAGE_TEXT
       dice_wk = dice_arr.shift
 
       debug('roll dice_wk d6', dice_wk)
-      rollTotal, rollDiceResultText, roll_cnt1, rollDiceMaxCount, roll_n_max, roll_cnt_suc, roll_cnt_re = roll(dice_wk, 6, (sortType & 1))
+      rollTotal, rollDiceResultText, roll_cnt1, rollDiceMaxCount, roll_n_max, roll_cnt_suc, roll_cnt_re = roll(dice_wk, 6, (@sortType & 1))
 
       debug('rollTotal, rollDiceResultText, roll_cnt1, rollDiceMaxCount, roll_n_max, roll_cnt_suc, roll_cnt_re',
             rollTotal, rollDiceResultText, roll_cnt1, rollDiceMaxCount, roll_n_max, roll_cnt_suc, roll_cnt_re)

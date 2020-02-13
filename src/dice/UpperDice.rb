@@ -55,7 +55,7 @@ module UpperDice
     expr.split("+").each do |dice|
       times, sides = dice.split("U", 2).map { |s| s.to_i }
       arr = roll_u(times, sides, reroll_threshold)
-      if sortType & 2 != 0
+      if @sortType & 2 != 0
         arr = arr.sort()
       end
       dice_list.concat(arr)
@@ -84,12 +84,12 @@ module UpperDice
   end
 
   def getAddRollUpperTarget(threshold)
-    if upplerRollThreshold == "Max"
+    if @upplerRollThreshold == "Max"
       2
     elsif threshold
       threshold.to_i
     else
-      upplerRollThreshold
+      @upplerRollThreshold
     end
   end
 
@@ -100,7 +100,7 @@ module UpperDice
     if modifier.empty?
       0
     else
-      ArithmeticEvaluator.new.eval(modifier, fractionType.to_sym)
+      ArithmeticEvaluator.new.eval(modifier, @fractionType.to_sym)
     end
   end
 

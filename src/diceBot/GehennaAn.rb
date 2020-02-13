@@ -52,7 +52,7 @@ INFO_MESSAGE_TEXT
 
     mod = parren_killer("(0#{modText})").to_i
 
-    diceValue, diceText, = roll(diceCount, 6, (sortType & 1))
+    diceValue, diceText, = roll(diceCount, 6, (@sortType & 1))
 
     diceArray = diceText.split(/,/).collect { |i| i.to_i }
 

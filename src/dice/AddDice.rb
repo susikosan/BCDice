@@ -113,11 +113,11 @@ module AddDice
     dice_cnt_total = 0
     double_check = false
 
-    if sameDiceRerollCount != 0 # 振り足しありのゲームでダイスが二個以上
-      if sameDiceRerollType <= 0 # 判定のみ振り足し
+    if @sameDiceRerollCount != 0 # 振り足しありのゲームでダイスが二個以上
+      if @sameDiceRerollType <= 0 # 判定のみ振り足し
         debug('判定のみ振り足し')
         double_check = true if isCheckSuccess
-      elsif  sameDiceRerollType <= 1 # ダメージのみ振り足し
+      elsif  @sameDiceRerollType <= 1 # ダメージのみ振り足し
         debug('ダメージのみ振り足し')
         double_check = true unless isCheckSuccess
       else # 両方振り足し
@@ -209,9 +209,9 @@ module AddDice
 
       debug('dice_wk', dice_wk)
       debug('dice_max', dice_max)
-      debug('(sortType & 1)', (sortType & 1))
+      debug('(sortType & 1)', (@sortType & 1))
 
-      dice_dat = rollLocal(dice_wk, dice_max, (sortType & 1))
+      dice_dat = rollLocal(dice_wk, dice_max, (@sortType & 1))
       debug('dice_dat', dice_dat)
 
       dice_new = dice_dat[0]
@@ -254,7 +254,7 @@ module AddDice
       count_bucket[val] += 1
     end
 
-    reroll_threshold = sameDiceRerollCount == 1 ? roll_times : sameDiceRerollCount
+    reroll_threshold = @sameDiceRerollCount == 1 ? roll_times : @sameDiceRerollCount
     count_bucket.each do |_, num|
       if num >= reroll_threshold
         dice_queue.push(num)
@@ -321,7 +321,7 @@ module AddDice
   end
 
   def getD66Value(mode = nil)
-    mode ||= d66Type
+    mode ||= @d66Type
 
     isSwap = (mode > 1)
     getD66(isSwap)

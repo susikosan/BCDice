@@ -87,7 +87,7 @@ INFO_MESSAGE_TEXT
     dice_str = ""
     total_n = 0
 
-    _, dice_str, = roll(dice_c, 6, (sortType & 1))
+    _, dice_str, = roll(dice_c, 6, (@sortType & 1))
     dice_num = dice_str.split(/,/).collect { |i| i.to_i }
 
     dice_now = dice_num[dice_c - 2] + dice_num[dice_c - 1]

@@ -175,7 +175,7 @@ INFO_MESSAGE_TEXT
     dice_str = ""
     total_n = 0
 
-    _, dice_str, = roll(diceCount, 6, (sortType & 1))
+    _, dice_str, = roll(diceCount, 6, (@sortType & 1))
     dice_num = dice_str.split(/,/).collect { |i| i.to_i }
     debug("diceCount, dice_num", diceCount, dice_num)
 

@@ -136,17 +136,19 @@ INFO_MESSAGE_TEXT
   end
 
   # SW2.0 の超成功用
-  def check2dCritical(critical, dice_new, dice_arry, loop_count)
-    return if critical <= 2
+  def times_reroll_add_dice(critical, dice_new, loop_count, _dice_values)
+    return 0 if critical <= 2
 
     if loop_count == 0
-      return if  dice_new == 12
-      return if  dice_new == 2
+      return 0 if dice_new == 12
+      return 0 if dice_new == 2
     end
 
     if dice_new >= critical
-      dice_arry.push(2)
+      return 2
     end
+
+    return 0
   end
 
   def check_nD6(total_n, dice_n, signOfInequality, diff, dice_cnt, dice_max, n1, n_max) # ゲーム別成功度判定(nD6)

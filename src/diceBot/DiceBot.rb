@@ -71,8 +71,6 @@ class DiceBot
 
   def initialize(randomizer: Randomizer.new)
     @sortType = 0 # ソート設定(1 = 足し算ダイスでソート有, 2 = バラバラロール（Bコマンド）でソート有, 3 = １と２両方ソート有）
-    @sameDiceRerollCount = 0 # ゾロ目で振り足し(0=無し, 1=全部同じ目, 2=ダイスのうち2個以上同じ目)
-    @sameDiceRerollType = 0 # ゾロ目で振り足しのロール種別(0=判定のみ, 1=ダメージのみ, 2=両方)
     @d66Type = 1 # d66の差し替え(0=D66無し, 1=順番そのまま([5,3]->53), 2=昇順入れ替え([5,3]->35)
     @upplerRollThreshold = 0 # 上方無限
     @rerollNumber = 0 # 振り足しする条件
@@ -380,7 +378,9 @@ class DiceBot
   end
 
   # SW2.0 の超成功用
-  def check2dCritical(critical, dice_new, dice_arry, loop_count); end
+  def times_reroll_add_dice(_critical, _dice_new, _loop_count, _dice_values)
+    0
+  end
 
   def is2dCritical
     false

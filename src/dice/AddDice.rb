@@ -113,20 +113,6 @@ module AddDice
     dice_cnt_total = 0
     double_check = false
 
-    if @sameDiceRerollCount != 0 # 振り足しありのゲームでダイスが二個以上
-      if @sameDiceRerollType <= 0 # 判定のみ振り足し
-        debug('判定のみ振り足し')
-        double_check = true if isCheckSuccess
-      elsif  @sameDiceRerollType <= 1 # ダメージのみ振り足し
-        debug('ダメージのみ振り足し')
-        double_check = true unless isCheckSuccess
-      else # 両方振り足し
-        double_check = true
-      end
-    end
-
-    debug("double_check", double_check)
-
     arithmethic = ArithmeticEvaluator.new
     while (m = /(^([\d]+\*[\d]+)\*(.+)|(.+)\*([\d]+\*[\d]+)$|(.+)\*([\d]+\*[\d]+)\*(.+))/.match(string))
       if  m[2]
@@ -189,7 +175,7 @@ module AddDice
     return dice_total, dice_n, output, n1, n_max, dice_cnt_total, dice_max
   end
 
-  def rollDiceAddingUpCommand(dice_count, dice_max, slashMark, double_check, isCheckSuccess, critical)
+  def rollDiceAddingUpCommand(dice_count, dice_max, slashMark, _double_check, isCheckSuccess, critical)
     result_dice_count = 0
     dice_now = 0
     n1_count = 0
@@ -211,10 +197,9 @@ module AddDice
       debug('dice_max', dice_max)
       debug('(sortType & 1)', (@sortType & 1))
 
-      dice_dat = rollLocal(dice_wk, dice_max, (@sortType & 1))
-      debug('dice_dat', dice_dat)
+      dice_values = rollLocal(dice_wk, dice_max, (@sortType & 1))
 
-      dice_new = dice_dat[0]
+      dice_new = dice_values.sum()
       dice_now += dice_new
 
       debug('slashMark', slashMark)
@@ -223,16 +208,15 @@ module AddDice
       dice_str += "][" if dice_str != ""
       debug('dice_str', dice_str)
 
-      dice_str += dice_dat[1]
-      n1_count += dice_dat[2]
-      max_number += dice_dat[3]
+      dice_str += dice_values.join(",")
+      n1_count += dice_values.count(1)
+      max_number += dice_values.count(dice_max)
 
-      # 振り足しありでダイスが二個以上
-      if double_check && (dice_wk >= 2)
-        addDiceArrayByAddDiceCount(dice_dat, dice_max, dice_arry, dice_wk)
+      times_reroll = times_reroll_add_dice(critical, dice_new, loop_count, dice_values)
+      if times_reroll > 0
+        dice_arry.push(times_reroll)
       end
 
-      check2dCritical(critical, dice_new, dice_arry, loop_count)
       loop_count += 1
     end
 
@@ -243,23 +227,6 @@ module AddDice
     output += "#{dice_now}[#{dice_str}]"
 
     return dice_max, dice_now, output, n1_count, max_number, result_dice_count
-  end
-
-  def addDiceArrayByAddDiceCount(dice_dat, _dice_max, dice_queue, roll_times)
-    values = dice_dat[1].split(",").map(&:to_i)
-    count_bucket = {}
-
-    values.each do |val|
-      count_bucket[val] ||= 0
-      count_bucket[val] += 1
-    end
-
-    reroll_threshold = @sameDiceRerollCount == 1 ? roll_times : @sameDiceRerollCount
-    count_bucket.each do |_, num|
-      if num >= reroll_threshold
-        dice_queue.push(num)
-      end
-    end
   end
 
   def getSlashedDice(slashMark, lhs)
@@ -282,40 +249,37 @@ module AddDice
     end
   end
 
-  # @return [Array<(Integer, String, Integer, Integer)>] 合計, ダイスのカンマ区切り, 出目1の数, 出目最大の数
+  # @param times [Integer]
+  # @param sides [Integer]
+  # @param sort_type [Integer]
+  # @return [Array<Integer>] 出目一覧
   def rollLocal(times, sides, sort_type)
+    if (times > $DICE_MAXCNT) || (sides > $DICE_MAXNUM)
+      return []
+    end
+
     if sides == 66
-      return rollD66(times)
+      swap_type = @d66Type > 1 ? :asc : :none
+      values = @randomizer.roll_d66(times, swap_type)
+    else
+      values = @randomizer.roll_barabara(times, sides)
     end
 
-    unless (times <= $DICE_MAXCNT) && (sides <= $DICE_MAXNUM)
-      return 0, "", 0, 0
-    end
-
-    arr = @randomizer.roll_barabara(times, sides)
     if sort_type != 0
-      arr = arr.sort()
+      values = values.sort()
     end
 
-    value = arr.sum()
-    text = arr.join(",")
-    n1_count = arr.count(1)
-    nsides_count = arr.count(sides)
-
-    return value, text, n1_count, nsides_count
+    return values
   end
 
   def rollD66(count)
-    d66List = []
+    swap_type = @d66Type > 1 ? :asc : :none
+    values = @randomizer.roll_d66(count, swap_type)
 
-    count.times do
-      d66List << getD66Value()
-    end
-
-    total = d66List.inject { |sum, i| sum + i }
-    text = d66List.join(',')
-    n1Count = d66List.count(1)
-    nMaxCount = d66List.count(66)
+    total = values.sum()
+    text = values.join(',')
+    n1Count = values.count(1)
+    nMaxCount = values.count(66)
 
     return [total, text, n1Count, nMaxCount, 0, 0, 0]
   end
@@ -328,24 +292,8 @@ module AddDice
   end
 
   def getD66(isSwap)
-    output = 0
-
-    dice_a = @randomizer.rand(6)
-    dice_b = @randomizer.rand(6)
-    debug("dice_a", dice_a)
-    debug("dice_b", dice_b)
-
-    if isSwap && (dice_a > dice_b)
-      # 大小でスワップするタイプ
-      output = dice_a + dice_b * 10
-    else
-      # 出目そのまま
-      output = dice_a * 10 + dice_b
-    end
-
-    debug("output", output)
-
-    return output
+    swap_type = isSwap ? :asc : :none
+    return @randomizer.roll_d66_once(swap_type)
   end
 
   def check_suc(*check_param)

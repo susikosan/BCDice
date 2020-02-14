@@ -5,8 +5,6 @@ class TokumeiTenkousei < DiceBot
     super
 
     @sortType = 1
-    @sameDiceRerollCount = 1 # ゾロ目で振り足し(0=無し, 1=全部同じ目, 2=ダイスのうち2個以上同じ目)
-    @sameDiceRerollType = 2 # ゾロ目で振り足しのロール種別(0=判定のみ, 1=ダメージのみ, 2=両方)
   end
 
   def gameName
@@ -45,5 +43,17 @@ INFO_MESSAGE_TEXT
     end
 
     return ''
+  end
+
+  def times_reroll_add_dice(_critical, _dice_new, _loop_count, dice_values)
+    if dice_values.length <= 1
+      return 0
+    end
+
+    if dice_values.uniq.length == 1
+      return dice_values.length
+    end
+
+    return 0
   end
 end

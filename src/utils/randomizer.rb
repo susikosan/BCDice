@@ -14,6 +14,27 @@ class Randomizer
     Array.new(times) { rand(sides) }
   end
 
+  # @param [Integer] times 振る回数
+  # @param [Symbol] swap_type :asc 昇順, :desc 降順, :none 入れ替えなし
+  # @return [Array<Integer>]
+  def roll_d66(times, swap_type)
+    Array.new(times) { roll_d66_once(swap_type) }
+  end
+
+  # @param [Symbol] swap_type :asc 昇順, :desc 降順, :none 入れ替えなし
+  # @return [Integer]
+  def roll_d66_once(swap_type)
+    values = Array.new(2) { rand(6) }
+    case swap_type
+    when :asc
+      values.sort!
+    when :desc
+      values.sort!.reverse!
+    end
+
+    return values.first * 10 + values.last
+  end
+
   def rand(sides)
     ret = Kernel.rand(sides) + 1
 

@@ -7,7 +7,6 @@ class TunnelsAndTrolls < DiceBot
     super
 
     @sortType = 1
-    @sameDiceRerollCount = 1
   end
 
   def gameName
@@ -53,6 +52,14 @@ INFO_MESSAGE_TEXT
     end
 
     return string
+  end
+
+  def times_reroll_add_dice(_critical, _dice_new, _loop_count, dice_values)
+    if dice_values.length > 1 && dice_values.uniq.length == 1
+      return dice_values.length
+    else
+      return 0
+    end
   end
 
   def dice_command_xRn(string, nick_e)

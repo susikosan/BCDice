@@ -8,8 +8,6 @@ class Template < DiceBot
     super
 
     # @sortType = 0;      #ソート設定(1 = 足し算ダイスでソート有, 2 = バラバラロール（Bコマンド）でソート有, 3 = １と２両方ソート有）
-    # @sameDiceRerollCount = 0;     #ゾロ目で振り足し(0=無し, 1=全部同じ目, 2=ダイスのうち2個以上同じ目)
-    # @sameDiceRerollType = 0;   #ゾロ目で振り足しのロール種別(0=判定のみ, 1=ダメージのみ, 2=両方)
     # @d66Type = 0;        #d66の差し替え
     # @upplerRollThreshold = 0;      #上方無限
     # @rerollNumber = 0;      #振り足しする条件

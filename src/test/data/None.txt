@@ -878,3 +878,45 @@ S2R6[3]
 output:
 DiceBot : (2R6[3]) ＞ 3,2 + 1 ＞ 成功数0###secret dice###
 rand:3/6,2/6,1/6
+============================
+input:
+D66
+output:
+DiceBot : (D66) ＞ 32
+rand:3/6,2/6
+============================
+input:
+D66
+output:
+DiceBot : (D66) ＞ 23
+rand:2/6,3/6
+============================
+input:
+D66S
+output:
+DiceBot : (D66S) ＞ 23
+rand:3/6,2/6
+============================
+input:
+D66S
+output:
+DiceBot : (D66S) ＞ 23
+rand:2/6,3/6
+============================
+input:
+D66N
+output:
+DiceBot : (D66N) ＞ 32
+rand:3/6,2/6
+============================
+input:
+D66N
+output:
+DiceBot : (D66N) ＞ 23
+rand:2/6,3/6
+============================
+input:
+SD66N
+output:
+DiceBot : (D66N) ＞ 23###secret dice###
+rand:2/6,3/6

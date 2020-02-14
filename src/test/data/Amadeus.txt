@@ -514,3 +514,38 @@ output:
 Amadeus : 特殊メニュー表(46) ＞ ジヴァヤ・ヴォジャ（スラブ）
 rand:4/6,6/6
 ============================
+input:
+D66
+output:
+Amadeus : (D66) ＞ 23
+rand:3/6,2/6
+============================
+input:
+D66
+output:
+Amadeus : (D66) ＞ 23
+rand:2/6,3/6
+============================
+input:
+D66S
+output:
+Amadeus : (D66S) ＞ 23
+rand:3/6,2/6
+============================
+input:
+D66S
+output:
+Amadeus : (D66S) ＞ 23
+rand:2/6,3/6
+============================
+input:
+D66N
+output:
+Amadeus : (D66N) ＞ 32
+rand:3/6,2/6
+============================
+input:
+D66N
+output:
+Amadeus : (D66N) ＞ 23
+rand:2/6,3/6

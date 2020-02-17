@@ -176,6 +176,9 @@ $allGameTypes = %w{
   SwordWorld
   SwordWorld2.0
   SwordWorld2.5
+  SwordWorldEx.rb
+  SwordWorld2_5Ex.rb
+  SwordWorld2_0Ex.rb
   TORG
   TORG1.5
   TherapieSein
